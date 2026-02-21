@@ -20,8 +20,11 @@ var CodeMirrorModules = (() => {
   // codemirror-entry.js
   var codemirror_entry_exports = {};
   __export(codemirror_entry_exports, {
+    Decoration: () => Decoration,
     EditorState: () => EditorState,
     EditorView: () => EditorView,
+    ViewPlugin: () => ViewPlugin,
+    WidgetType: () => WidgetType,
     basicSetup: () => basicSetup,
     extensions: () => extensions,
     markdown: () => markdown

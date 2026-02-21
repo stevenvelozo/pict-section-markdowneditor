@@ -4,6 +4,12 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Markdown Editor - Pict Example</title>
+		<!-- KaTeX CSS and JS for math equation rendering -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+		<!-- Mermaid JS for diagram rendering -->
+		<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+		<script>mermaid.initialize({ startOnLoad: false, theme: 'default' });</script>
 		<!-- PICT Dynamic View CSS Container -->
 		<style id="PICT-CSS"></style>
 		<!-- Red Rock Mesa Theme — Pict Example App -->
@@ -58,6 +64,20 @@
 					tmpView.setReadOnly(!tmpView.options.ReadOnly);
 				}
 			}
+			function toggleAllPreviews()
+			{
+				if (typeof(_Pict) !== 'undefined' && _Pict.views.ExampleMarkdownEditorView)
+				{
+					_Pict.views.ExampleMarkdownEditorView.togglePreview();
+				}
+			}
+			function toggleRenderedView()
+			{
+				if (typeof(_Pict) !== 'undefined' && _Pict.views.ExampleMarkdownEditorView)
+				{
+					_Pict.views.ExampleMarkdownEditorView.toggleRenderedView();
+				}
+			}
 			Pict.safeOnDocumentReady(() => { Pict.safeLoadPictApplication(MarkdownEditorExample, 1); });
 		</script>
 	</head>
@@ -74,6 +94,8 @@
 			<div class="pict-example-actions">
 				<button type="button" onclick="getAllContent()">Get All Content</button>
 				<button type="button" onclick="toggleReadOnly()">Toggle Read-Only</button>
+				<button type="button" onclick="toggleAllPreviews()">Toggle All Previews</button>
+				<button type="button" onclick="toggleRenderedView()">Toggle Rendered View</button>
 			</div>
 			<h3 class="pict-example-section-header">Segmented Markdown Editor</h3>
 			<div id="MarkdownEditorContainer"></div>

@@ -61,6 +61,12 @@ module.exports.default_configuration = (
 					},
 					{
 						"Content": "## Second Section\n\nThis is a second segment. You can add, remove, and reorder segments."
+					},
+					{
+						"Content": "## Diagrams & Math\n\n```mermaid\ngraph LR;\n    A[Editor] --> B[Preview];\n    B --> C[Rendered];\n```\n\nEinstein's equation: $E=mc^2$\n\nDisplay math:\n\n$$\n\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}\n$$"
+					},
+					{
+						"Content": "## Code Highlighting\n\nSyntax highlighting is powered by **pict-section-code** via the rich preview:\n\n```javascript\nconst greeting = 'Hello, World!';\n\nfunction fibonacci(n) {\n    if (n <= 1) return n;\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));\n```\n\nInline code like `const x = 42` also works."
 					}
 				]
 			}
