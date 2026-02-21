@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Markdown Editor - Pict Example</title>
+		<!-- PICT Dynamic View CSS Container -->
+		<style id="PICT-CSS"></style>
+		<!-- Red Rock Mesa Theme — Pict Example App -->
+		<style>
+			*, *::before, *::after { box-sizing: border-box; }
+			body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FAEDCD; color: #264653; }
+
+			/* --- Header Bar --- */
+			.pict-example-header { display: flex; align-items: stretch; background: #264653; border-bottom: 3px solid #E76F51; }
+			.pict-example-badge { background: #E76F51; color: #fff; padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; }
+			.pict-example-badge svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+			.pict-example-app-name { padding: 0.6rem 1rem; color: #FAEDCD; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; }
+			.pict-example-module { margin-left: auto; padding: 0.6rem 1rem; color: #D4A373; font-size: 0.75rem; display: flex; align-items: center; letter-spacing: 0.03em; }
+
+			/* --- Content Area --- */
+			.pict-example-content { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
+
+			/* --- Section Headers --- */
+			.pict-example-section-header { color: #264653; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 0.5rem 0; }
+
+			/* --- Toolbar --- */
+			.pict-example-actions { margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+			.pict-example-actions button { background: #264653; color: #FAEDCD; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+			.pict-example-actions button:hover { background: #1A3340; }
+
+			/* --- Editor Container --- */
+			#MarkdownEditorContainer { background: #fff; border: 1px solid #D4A373; border-top: 4px solid #E76F51; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(38,70,83,0.08); }
+
+			/* --- Output Area --- */
+			#OutputWrap { margin-top: 1.5rem; display: none; }
+			#OutputContent { padding: 1rem; background: #fff; border: 1px solid #D4A373; border-radius: 6px; font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 0.8rem; white-space: pre-wrap; max-height: 300px; overflow: auto; box-shadow: 0 2px 8px rgba(38,70,83,0.08); }
+		</style>
+		<script src="./codemirror-bundle.js" type="text/javascript"></script>
+		<script src="./pict.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function getAllContent()
+			{
+				if (typeof(_Pict) !== 'undefined' && _Pict.views.ExampleMarkdownEditorView)
+				{
+					var tmpContent = _Pict.views.ExampleMarkdownEditorView.getAllContent();
+					var tmpOutputWrap = document.getElementById('OutputWrap');
+					var tmpOutput = document.getElementById('OutputContent');
+					tmpOutputWrap.style.display = 'block';
+					tmpOutput.textContent = tmpContent;
+				}
+			}
+			function toggleReadOnly()
+			{
+				if (typeof(_Pict) !== 'undefined' && _Pict.views.ExampleMarkdownEditorView)
+				{
+					var tmpView = _Pict.views.ExampleMarkdownEditorView;
+					tmpView.setReadOnly(!tmpView.options.ReadOnly);
+				}
+			}
+			Pict.safeOnDocumentReady(() => { Pict.safeLoadPictApplication(MarkdownEditorExample, 1); });
+		</script>
+	</head>
+	<body>
+		<div class="pict-example-header">
+			<div class="pict-example-badge">
+				<svg viewBox="0 0 16 16"><polygon points="8,1 10,6 16,6 11,9.5 13,15 8,11.5 3,15 5,9.5 0,6 6,6"/></svg>
+				Pict Example
+			</div>
+			<div class="pict-example-app-name">Markdown Editor</div>
+			<div class="pict-example-module">pict-section-markdowneditor</div>
+		</div>
+		<div class="pict-example-content">
+			<div class="pict-example-actions">
+				<button type="button" onclick="getAllContent()">Get All Content</button>
+				<button type="button" onclick="toggleReadOnly()">Toggle Read-Only</button>
+			</div>
+			<h3 class="pict-example-section-header">Segmented Markdown Editor</h3>
+			<div id="MarkdownEditorContainer"></div>
+			<div id="OutputWrap">
+				<h3 class="pict-example-section-header">Combined Output</h3>
+				<div id="OutputContent"></div>
+			</div>
+		</div>
+		<script src="./markdown_editor_example.min.js" type="text/javascript"></script>
+	</body>
+</html>

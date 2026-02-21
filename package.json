@@ -1,0 +1,51 @@
+{
+	"name": "pict-section-markdowneditor",
+	"version": "0.0.1",
+	"description": "Pict segmented markdown editor section built on CodeMirror",
+	"main": "source/Pict-Section-MarkdownEditor.js",
+	"scripts": {
+		"start": "node source/Pict-Section-MarkdownEditor.js",
+		"build": "npx quack build",
+		"test": "npx mocha -u tdd -R spec",
+		"tests": "npx mocha -u tdd --exit -R spec --grep",
+		"coverage": "npx nyc --reporter=lcov --reporter=text-lcov npx mocha -- -u tdd -R spec"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/stevenvelozo/pict-section-markdowneditor.git"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/stevenvelozo/pict-section-markdowneditor/issues"
+	},
+	"homepage": "https://github.com/stevenvelozo/pict-section-markdowneditor#readme",
+	"devDependencies": {
+		"browser-env": "^3.3.0",
+		"chai": "^6.2.2",
+		"mocha": "^11.7.5",
+		"pict": "^1.0.350",
+		"quackage": "^1.0.56"
+	},
+	"mocha": {
+		"diff": true,
+		"extension": [
+			"js"
+		],
+		"package": "./package.json",
+		"reporter": "spec",
+		"slow": "75",
+		"timeout": "5000",
+		"ui": "tdd",
+		"watch-files": [
+			"source/**/*.js",
+			"test/**/*.js"
+		],
+		"watch-ignore": [
+			"lib/vendor"
+		]
+	},
+	"dependencies": {
+		"pict-view": "^1.0.66"
+	}
+}
