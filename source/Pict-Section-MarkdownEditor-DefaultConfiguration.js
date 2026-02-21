@@ -82,7 +82,7 @@ module.exports = (
 	[
 		{ "HTML": "&uarr;", "Action": "moveSegmentUp", "Class": "pict-mde-btn-move", "Title": "Move Up" },
 		{ "HTML": "&darr;", "Action": "moveSegmentDown", "Class": "pict-mde-btn-move", "Title": "Move Down" },
-		{ "HTML": "1", "Action": "toggleControls", "Class": "pict-mde-btn-linenums", "Title": "Toggle Controls" },
+		{ "HTML": "&#x229E;", "Action": "toggleControls", "Class": "pict-mde-btn-linenums", "Title": "Toggle Controls" },
 		{ "HTML": "&#x25CE;", "Action": "toggleSegmentPreview", "Class": "pict-mde-btn-preview", "Title": "Toggle Preview" }
 	],
 
