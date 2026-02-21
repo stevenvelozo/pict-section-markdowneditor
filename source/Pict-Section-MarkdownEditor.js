@@ -40,8 +40,8 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		// Drag state for reorder
 		this._dragSourceIndex = -1;
 
-		// Whether line numbers are currently shown
-		this._lineNumbersVisible = false;
+		// Whether controls (line numbers + right sidebar) are currently visible
+		this._controlsVisible = true;
 
 		// Whether rich previews are globally visible
 		this._previewsVisible = true;
@@ -240,9 +240,13 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		{
 			tmpContainer.classList.add('pict-mde-previews-hidden');
 		}
-		if (this._lineNumbersVisible)
+		if (this._controlsVisible)
 		{
-			tmpContainer.classList.add('pict-mde-linenums-on');
+			tmpContainer.classList.add('pict-mde-controls-on');
+		}
+		else
+		{
+			tmpContainer.classList.add('pict-mde-controls-hidden');
 		}
 
 		// Load existing segments from data address, or start with one empty segment
@@ -289,6 +293,9 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		let tmpSegmentElement = tmpTempDiv.firstElementChild;
 		pContainer.appendChild(tmpSegmentElement);
 
+		// Build quadrant buttons from configuration arrays
+		this._buildQuadrantButtons(tmpSegmentElement, tmpSegmentIndex);
+
 		// Restore per-segment preview hidden state (tracked by logical index)
 		if (this._hiddenPreviewSegments[pIndex])
 		{
@@ -312,6 +319,100 @@ class PictSectionMarkdownEditor extends libPictViewClass
 			{
 				this._updateImagePreviews(tmpSegmentIndex);
 				this._updateRichPreviews(tmpSegmentIndex);
+			}
+		}
+	}
+
+	/**
+	 * Build buttons in all four quadrants (TL, BL, TR, BR) from the
+	 * configuration arrays.  Each button config has:
+	 *   HTML   — innerHTML
+	 *   Action — "methodName" or "methodName:arg"
+	 *   Class  — additional CSS class(es)
+	 *   Title  — tooltip text
+	 *
+	 * Left quadrant buttons (TL, BL) get the "pict-mde-left-btn" base class.
+	 * Right quadrant buttons (TR, BR) get the "pict-mde-sidebar-btn" base class.
+	 *
+	 * @param {HTMLElement} pSegmentElement - The .pict-mde-segment element
+	 * @param {number} pSegmentIndex - The internal segment index
+	 */
+	_buildQuadrantButtons(pSegmentElement, pSegmentIndex)
+	{
+		let tmpQuadrants =
+		[
+			{ key: 'ButtonsTL', selector: '.pict-mde-quadrant-tl', baseClass: 'pict-mde-left-btn' },
+			{ key: 'ButtonsBL', selector: '.pict-mde-quadrant-bl', baseClass: 'pict-mde-left-btn' },
+			{ key: 'ButtonsTR', selector: '.pict-mde-quadrant-tr', baseClass: 'pict-mde-sidebar-btn' },
+			{ key: 'ButtonsBR', selector: '.pict-mde-quadrant-br', baseClass: 'pict-mde-sidebar-btn' }
+		];
+
+		let tmpSelf = this;
+
+		for (let q = 0; q < tmpQuadrants.length; q++)
+		{
+			let tmpQuadrant = tmpQuadrants[q];
+			let tmpContainer = pSegmentElement.querySelector(tmpQuadrant.selector);
+			if (!tmpContainer)
+			{
+				continue;
+			}
+
+			let tmpButtons = this.options[tmpQuadrant.key];
+			if (!Array.isArray(tmpButtons))
+			{
+				continue;
+			}
+
+			for (let b = 0; b < tmpButtons.length; b++)
+			{
+				let tmpBtnConfig = tmpButtons[b];
+
+				let tmpButton = document.createElement('button');
+				tmpButton.type = 'button';
+				tmpButton.className = tmpQuadrant.baseClass;
+				if (tmpBtnConfig.Class)
+				{
+					tmpButton.className += ' ' + tmpBtnConfig.Class;
+				}
+				tmpButton.innerHTML = tmpBtnConfig.HTML || '';
+				tmpButton.title = tmpBtnConfig.Title || '';
+
+				// Parse the action string: "methodName" or "methodName:arg"
+				let tmpAction = tmpBtnConfig.Action || '';
+				let tmpMethod = tmpAction;
+				let tmpArg = null;
+				let tmpColonIndex = tmpAction.indexOf(':');
+				if (tmpColonIndex >= 0)
+				{
+					tmpMethod = tmpAction.substring(0, tmpColonIndex);
+					tmpArg = tmpAction.substring(tmpColonIndex + 1);
+				}
+
+				// Build the click handler
+				(function (pMethod, pArg, pSegIdx)
+				{
+					tmpButton.addEventListener('click', () =>
+					{
+						if (typeof (tmpSelf[pMethod]) === 'function')
+						{
+							if (pArg !== null)
+							{
+								tmpSelf[pMethod](pSegIdx, pArg);
+							}
+							else
+							{
+								tmpSelf[pMethod](pSegIdx);
+							}
+						}
+						else
+						{
+							tmpSelf.log.warn(`PICT-MarkdownEditor _buildQuadrantButtons: method "${pMethod}" not found.`);
+						}
+					});
+				})(tmpMethod, tmpArg, pSegmentIndex);
+
+				tmpContainer.appendChild(tmpButton);
 			}
 		}
 	}
@@ -1535,8 +1636,8 @@ class PictSectionMarkdownEditor extends libPictViewClass
 			return;
 		}
 
-		let tmpSidebarActions = tmpSegmentEl.querySelector('.pict-mde-sidebar-actions');
-		if (!tmpSidebarActions)
+		let tmpQuadrantTR = tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');
+		if (!tmpQuadrantTR)
 		{
 			return;
 		}
@@ -1562,14 +1663,14 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		let tmpOffsetTop = tmpCursorCoords.top - tmpSegmentRect.top;
 
 		// Clamp so the sidebar buttons don't go above the segment or below it
-		let tmpSidebarHeight = tmpSidebarActions.offsetHeight || 0;
+		let tmpSidebarHeight = tmpQuadrantTR.offsetHeight || 0;
 		let tmpSegmentHeight = tmpSegmentEl.offsetHeight || 0;
 		let tmpMaxOffset = Math.max(0, tmpSegmentHeight - tmpSidebarHeight);
 		tmpOffsetTop = Math.max(0, Math.min(tmpOffsetTop, tmpMaxOffset));
 
 		// Apply the cursor-relative positioning
-		tmpSidebarActions.classList.add('pict-mde-sidebar-at-cursor');
-		tmpSidebarActions.style.setProperty('--pict-mde-sidebar-top', `${tmpOffsetTop}px`);
+		tmpQuadrantTR.classList.add('pict-mde-sidebar-at-cursor');
+		tmpQuadrantTR.style.setProperty('--pict-mde-sidebar-top', `${tmpOffsetTop}px`);
 	}
 
 	/**
@@ -1585,46 +1686,77 @@ class PictSectionMarkdownEditor extends libPictViewClass
 			return;
 		}
 
-		let tmpSidebarActions = tmpSegmentEl.querySelector('.pict-mde-sidebar-actions');
-		if (!tmpSidebarActions)
+		let tmpQuadrantTR = tmpSegmentEl.querySelector('.pict-mde-quadrant-tr');
+		if (!tmpQuadrantTR)
 		{
 			return;
 		}
 
-		tmpSidebarActions.classList.remove('pict-mde-sidebar-at-cursor');
-		tmpSidebarActions.style.removeProperty('--pict-mde-sidebar-top');
+		tmpQuadrantTR.classList.remove('pict-mde-sidebar-at-cursor');
+		tmpQuadrantTR.style.removeProperty('--pict-mde-sidebar-top');
 	}
 
-	// -- Line Numbers --
+	// -- Controls Toggle (line numbers + right sidebar) --
 
 	/**
-	 * Toggle line numbers on or off for all segments.
+	 * Toggle controls (line number gutters and right sidebar formatting
+	 * buttons) on or off for all segments.
 	 *
+	 * When controls are hidden the right-side quadrants (TR, BR) appear
+	 * faintly on hover but are otherwise invisible, and CodeMirror line
+	 * number gutters are hidden.
+	 *
+	 * This method is called by the quadrant button system with the segment
+	 * index as the first argument — it ignores that argument and uses only
+	 * the optional boolean.
+	 *
+	 * @param {number|boolean} [pSegmentIndexOrVisible] - Segment index (ignored) or boolean
 	 * @param {boolean} [pVisible] - If provided, set to this value; otherwise toggle
 	 */
-	toggleLineNumbers(pVisible)
+	toggleControls(pSegmentIndexOrVisible, pVisible)
 	{
-		if (typeof (pVisible) === 'boolean')
+		// When called from a quadrant button, first arg is segment index (number).
+		// When called programmatically, first arg may be a boolean.
+		let tmpVisible = pVisible;
+		if (typeof (pSegmentIndexOrVisible) === 'boolean')
 		{
-			this._lineNumbersVisible = pVisible;
+			tmpVisible = pSegmentIndexOrVisible;
+		}
+
+		if (typeof (tmpVisible) === 'boolean')
+		{
+			this._controlsVisible = tmpVisible;
 		}
 		else
 		{
-			this._lineNumbersVisible = !this._lineNumbersVisible;
+			this._controlsVisible = !this._controlsVisible;
 		}
 
 		let tmpContainer = this._getContainerElement();
 		if (tmpContainer)
 		{
-			if (this._lineNumbersVisible)
+			if (this._controlsVisible)
 			{
-				tmpContainer.classList.add('pict-mde-linenums-on');
+				tmpContainer.classList.add('pict-mde-controls-on');
+				tmpContainer.classList.remove('pict-mde-controls-hidden');
 			}
 			else
 			{
-				tmpContainer.classList.remove('pict-mde-linenums-on');
+				tmpContainer.classList.remove('pict-mde-controls-on');
+				tmpContainer.classList.add('pict-mde-controls-hidden');
 			}
 		}
+	}
+
+	/**
+	 * Toggle line numbers on or off for all segments.
+	 * Backward-compatible alias for toggleControls().
+	 *
+	 * @param {boolean} [pVisible] - If provided, set to this value; otherwise toggle
+	 */
+	toggleLineNumbers(pVisible)
+	{
+		this.toggleControls(pVisible);
 	}
 
 	// -- Preview Toggle --

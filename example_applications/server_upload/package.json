@@ -1,0 +1,63 @@
+{
+	"name": "pict-section-markdowneditor-server-upload-example",
+	"version": "0.0.1",
+	"description": "Server Upload example for pict-section-markdowneditor — demonstrates onImageUpload hook with Orator server",
+	"main": "ServerUpload-Example-Application.js",
+	"scripts": {
+		"build": "npx quack build && npx quack copy",
+		"start": "node server.js",
+		"demo": "npm run build && npm start"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"copyFilesSettings": {
+		"whenFileExists": "overwrite"
+	},
+	"copyFiles": [
+		{
+			"from": "html/codemirror-bundle.js",
+			"to": "dist/codemirror-bundle.js"
+		},
+		{
+			"from": "html/index.html",
+			"to": "dist/index.html"
+		},
+		{
+			"from": "html/pict.min.js",
+			"to": "dist/pict.min.js"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.compatible.js",
+			"to": "dist/pict.compatible.js"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.compatible.js.map",
+			"to": "dist/pict.compatible.js.map"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.compatible.min.js",
+			"to": "dist/pict.compatible.min.js"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.compatible.min.js.map",
+			"to": "dist/pict.compatible.min.js.map"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.js",
+			"to": "dist/pict.js"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.js.map",
+			"to": "dist/pict.js.map"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.min.js",
+			"to": "dist/pict.min.js"
+		},
+		{
+			"from": "../../node_modules/pict/dist/pict.min.js.map",
+			"to": "dist/pict.min.js.map"
+		}
+	]
+}

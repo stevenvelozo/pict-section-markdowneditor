@@ -594,28 +594,26 @@ suite
 				);
 				test
 				(
-					'Segment template should contain sidebar with formatting buttons',
+					'Segment template should contain sidebar with quadrant containers',
 					(fDone) =>
 					{
 						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
 						let tmpSegTemplate = tmpConfig.Templates.find((t) => t.Hash === 'MarkdownEditor-Segment');
 						Expect(tmpSegTemplate.Template).to.contain('pict-mde-sidebar');
-						Expect(tmpSegTemplate.Template).to.contain("'bold'");
-						Expect(tmpSegTemplate.Template).to.contain("'italic'");
-						Expect(tmpSegTemplate.Template).to.contain("'code'");
-						Expect(tmpSegTemplate.Template).to.contain("'heading'");
-						Expect(tmpSegTemplate.Template).to.contain("'link'");
+						Expect(tmpSegTemplate.Template).to.contain('pict-mde-quadrant-tl');
+						Expect(tmpSegTemplate.Template).to.contain('pict-mde-quadrant-bl');
+						Expect(tmpSegTemplate.Template).to.contain('pict-mde-quadrant-tr');
+						Expect(tmpSegTemplate.Template).to.contain('pict-mde-quadrant-br');
 						return fDone();
 					}
 				);
 				test
 				(
-					'Segment template should contain image button and file input',
+					'Segment template should contain file input for image uploads',
 					(fDone) =>
 					{
 						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
 						let tmpSegTemplate = tmpConfig.Templates.find((t) => t.Hash === 'MarkdownEditor-Segment');
-						Expect(tmpSegTemplate.Template).to.contain('openImagePicker');
 						Expect(tmpSegTemplate.Template).to.contain('pict-mde-image-input');
 						Expect(tmpSegTemplate.Template).to.contain('accept="image/*"');
 						return fDone();
@@ -911,13 +909,13 @@ suite
 				);
 				test
 				(
-					'Segment template should contain per-segment preview toggle button',
+					'ButtonsBL config should contain a toggleSegmentPreview action with preview class',
 					(fDone) =>
 					{
 						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
-						let tmpSegTemplate = tmpConfig.Templates.find((t) => t.Hash === 'MarkdownEditor-Segment');
-						Expect(tmpSegTemplate.Template).to.contain('toggleSegmentPreview');
-						Expect(tmpSegTemplate.Template).to.contain('pict-mde-left-btn-preview');
+						let tmpPreviewBtn = tmpConfig.ButtonsBL.find((b) => b.Action === 'toggleSegmentPreview');
+						Expect(tmpPreviewBtn).to.be.an('object');
+						Expect(tmpPreviewBtn.Class).to.contain('pict-mde-btn-preview');
 						return fDone();
 					}
 				);
@@ -1004,6 +1002,223 @@ suite
 						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
 						Expect(tmpConfig.CSS).to.contain('pict-mde-rendered-view');
 						Expect(tmpConfig.CSS).to.contain('pict-mde-rendered-mode');
+						return fDone();
+					}
+				);
+			}
+		);
+
+		suite
+		(
+			'Quadrant Button System',
+			() =>
+			{
+				test
+				(
+					'Default config should have ButtonsTL, ButtonsBL, ButtonsTR, ButtonsBR arrays',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.ButtonsTL).to.be.an('array');
+						Expect(tmpConfig.ButtonsBL).to.be.an('array');
+						Expect(tmpConfig.ButtonsTR).to.be.an('array');
+						Expect(tmpConfig.ButtonsBR).to.be.an('array');
+						return fDone();
+					}
+				);
+				test
+				(
+					'ButtonsTL should have 1 entry (remove)',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.ButtonsTL.length).to.equal(1);
+						Expect(tmpConfig.ButtonsTL[0].Action).to.equal('removeSegment');
+						return fDone();
+					}
+				);
+				test
+				(
+					'ButtonsBL should have 4 entries (up, down, controls, preview)',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.ButtonsBL.length).to.equal(4);
+						Expect(tmpConfig.ButtonsBL[0].Action).to.equal('moveSegmentUp');
+						Expect(tmpConfig.ButtonsBL[1].Action).to.equal('moveSegmentDown');
+						Expect(tmpConfig.ButtonsBL[2].Action).to.equal('toggleControls');
+						Expect(tmpConfig.ButtonsBL[3].Action).to.equal('toggleSegmentPreview');
+						return fDone();
+					}
+				);
+				test
+				(
+					'ButtonsTR should have 6 entries (formatting buttons)',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.ButtonsTR.length).to.equal(6);
+						Expect(tmpConfig.ButtonsTR[0].Action).to.equal('applyFormatting:bold');
+						Expect(tmpConfig.ButtonsTR[5].Action).to.equal('openImagePicker');
+						return fDone();
+					}
+				);
+				test
+				(
+					'ButtonsBR should be empty by default',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.ButtonsBR.length).to.equal(0);
+						return fDone();
+					}
+				);
+				test
+				(
+					'CSS should contain quadrant classes',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.CSS).to.contain('pict-mde-quadrant-tl');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-quadrant-bl');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-quadrant-tr');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-quadrant-br');
+						return fDone();
+					}
+				);
+				test
+				(
+					'Each button config should have HTML, Action, Class, and Title',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						let tmpAllButtons = [].concat(tmpConfig.ButtonsTL, tmpConfig.ButtonsBL, tmpConfig.ButtonsTR, tmpConfig.ButtonsBR);
+						for (let i = 0; i < tmpAllButtons.length; i++)
+						{
+							Expect(tmpAllButtons[i]).to.have.property('HTML');
+							Expect(tmpAllButtons[i]).to.have.property('Action');
+							Expect(tmpAllButtons[i]).to.have.property('Class');
+							Expect(tmpAllButtons[i]).to.have.property('Title');
+						}
+						return fDone();
+					}
+				);
+				test
+				(
+					'_buildQuadrantButtons should be a callable method',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-QB1', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView._buildQuadrantButtons).to.be.a('function');
+						return fDone();
+					}
+				);
+			}
+		);
+
+		suite
+		(
+			'Controls Toggle',
+			() =>
+			{
+				test
+				(
+					'Instance should initialize with controls visible',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-CT1', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						return fDone();
+					}
+				);
+				test
+				(
+					'toggleControls should toggle _controlsVisible',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-CT2', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						tmpView.toggleControls();
+						Expect(tmpView._controlsVisible).to.equal(false);
+						tmpView.toggleControls();
+						Expect(tmpView._controlsVisible).to.equal(true);
+						return fDone();
+					}
+				);
+				test
+				(
+					'toggleControls should accept explicit boolean (first arg)',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-CT3', {}, libPictSectionMarkdownEditor);
+						tmpView.toggleControls(false);
+						Expect(tmpView._controlsVisible).to.equal(false);
+						tmpView.toggleControls(false);
+						Expect(tmpView._controlsVisible).to.equal(false);
+						tmpView.toggleControls(true);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						return fDone();
+					}
+				);
+				test
+				(
+					'toggleControls should accept segment index + explicit boolean (second arg)',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-CT4', {}, libPictSectionMarkdownEditor);
+						// Called like toggleControls(segmentIndex, boolean) from quadrant system
+						tmpView.toggleControls(0, false);
+						Expect(tmpView._controlsVisible).to.equal(false);
+						tmpView.toggleControls(0, true);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						return fDone();
+					}
+				);
+				test
+				(
+					'toggleControls should toggle when called with segment index and no boolean',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-CT5', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						// Called like toggleControls(segmentIndex) from quadrant button
+						tmpView.toggleControls(0);
+						Expect(tmpView._controlsVisible).to.equal(false);
+						tmpView.toggleControls(0);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						return fDone();
+					}
+				);
+				test
+				(
+					'toggleLineNumbers should be a backward-compatible alias for toggleControls',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-CT6', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView.toggleLineNumbers).to.be.a('function');
+						Expect(tmpView._controlsVisible).to.equal(true);
+						tmpView.toggleLineNumbers();
+						Expect(tmpView._controlsVisible).to.equal(false);
+						tmpView.toggleLineNumbers(true);
+						Expect(tmpView._controlsVisible).to.equal(true);
+						return fDone();
+					}
+				);
+				test
+				(
+					'CSS should contain controls-hidden rules',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.CSS).to.contain('pict-mde-controls-hidden');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-controls-on');
 						return fDone();
 					}
 				);

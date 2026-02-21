@@ -13,13 +13,8 @@ module.exports = (
 			"Hash": "MarkdownEditor-Segment",
 			"Template": /*html*/`<div class="pict-mde-segment" id="PictMDE-Segment-{~D:Record.SegmentIndex~}" data-segment-index="{~D:Record.SegmentIndex~}">
 	<div class="pict-mde-left-controls">
-		<button type="button" class="pict-mde-left-btn pict-mde-left-btn-remove" onclick="{~D:Record.ViewIdentifier~}.removeSegment({~D:Record.SegmentIndex~})" title="Remove Segment">&times;</button>
-		<div class="pict-mde-left-controls-bottom">
-			<button type="button" class="pict-mde-left-btn pict-mde-left-btn-move" onclick="{~D:Record.ViewIdentifier~}.moveSegmentUp({~D:Record.SegmentIndex~})" title="Move Up">&uarr;</button>
-			<button type="button" class="pict-mde-left-btn pict-mde-left-btn-linenums" onclick="{~D:Record.ViewIdentifier~}.toggleLineNumbers()" title="Toggle Line Numbers">1</button>
-			<button type="button" class="pict-mde-left-btn pict-mde-left-btn-preview" onclick="{~D:Record.ViewIdentifier~}.toggleSegmentPreview({~D:Record.SegmentIndex~})" title="Toggle Preview">&#x25CE;</button>
-			<button type="button" class="pict-mde-left-btn pict-mde-left-btn-move" onclick="{~D:Record.ViewIdentifier~}.moveSegmentDown({~D:Record.SegmentIndex~})" title="Move Down">&darr;</button>
-		</div>
+		<div class="pict-mde-quadrant-tl"></div>
+		<div class="pict-mde-quadrant-bl"></div>
 	</div>
 	<div class="pict-mde-drag-handle" draggable="true" title="Drag to reorder"></div>
 	<div class="pict-mde-segment-body">
@@ -28,14 +23,8 @@ module.exports = (
 		<div class="pict-mde-rich-preview" id="PictMDE-RichPreview-{~D:Record.SegmentIndex~}"></div>
 	</div>
 	<div class="pict-mde-sidebar" id="PictMDE-Sidebar-{~D:Record.SegmentIndex~}">
-		<div class="pict-mde-sidebar-actions">
-			<button type="button" class="pict-mde-sidebar-btn" onclick="{~D:Record.ViewIdentifier~}.applyFormatting({~D:Record.SegmentIndex~}, 'bold')" title="Bold (Ctrl+B)"><b>B</b></button>
-			<button type="button" class="pict-mde-sidebar-btn" onclick="{~D:Record.ViewIdentifier~}.applyFormatting({~D:Record.SegmentIndex~}, 'italic')" title="Italic (Ctrl+I)"><i>I</i></button>
-			<button type="button" class="pict-mde-sidebar-btn" onclick="{~D:Record.ViewIdentifier~}.applyFormatting({~D:Record.SegmentIndex~}, 'code')" title="Inline Code (Ctrl+E)"><code>&lt;&gt;</code></button>
-			<button type="button" class="pict-mde-sidebar-btn" onclick="{~D:Record.ViewIdentifier~}.applyFormatting({~D:Record.SegmentIndex~}, 'heading')" title="Heading">#</button>
-			<button type="button" class="pict-mde-sidebar-btn" onclick="{~D:Record.ViewIdentifier~}.applyFormatting({~D:Record.SegmentIndex~}, 'link')" title="Link">[&thinsp;]</button>
-			<button type="button" class="pict-mde-sidebar-btn pict-mde-sidebar-btn-image" onclick="{~D:Record.ViewIdentifier~}.openImagePicker({~D:Record.SegmentIndex~})" title="Insert Image">&#x25A3;</button>
-		</div>
+		<div class="pict-mde-quadrant-tr"></div>
+		<div class="pict-mde-quadrant-br"></div>
 		<input type="file" accept="image/*" class="pict-mde-image-input" id="PictMDE-ImageInput-{~D:Record.SegmentIndex~}" style="display:none" />
 	</div>
 </div>`
@@ -73,6 +62,44 @@ module.exports = (
 	// for diagram/equation rendering; code highlighting works without CDN scripts.
 	"EnableRichPreview": true,
 
+	// ---- Quadrant button definitions ----
+	// Each quadrant is an array of button objects:
+	//   HTML   — innerHTML for the button
+	//   Action — method name, optionally "method:arg" (receives segment index as first param)
+	//   Class  — additional CSS class(es) appended to the base class
+	//   Title  — tooltip text
+	//
+	// Consumers can override any quadrant to add, remove, or reorder buttons.
+	// Left quadrant buttons (TL, BL) get the "pict-mde-left-btn" base class.
+	// Right quadrant buttons (TR, BR) get the "pict-mde-sidebar-btn" base class.
+
+	"ButtonsTL":
+	[
+		{ "HTML": "&times;", "Action": "removeSegment", "Class": "pict-mde-btn-remove", "Title": "Remove Segment" }
+	],
+
+	"ButtonsBL":
+	[
+		{ "HTML": "&uarr;", "Action": "moveSegmentUp", "Class": "pict-mde-btn-move", "Title": "Move Up" },
+		{ "HTML": "&darr;", "Action": "moveSegmentDown", "Class": "pict-mde-btn-move", "Title": "Move Down" },
+		{ "HTML": "1", "Action": "toggleControls", "Class": "pict-mde-btn-linenums", "Title": "Toggle Controls" },
+		{ "HTML": "&#x25CE;", "Action": "toggleSegmentPreview", "Class": "pict-mde-btn-preview", "Title": "Toggle Preview" }
+	],
+
+	"ButtonsTR":
+	[
+		{ "HTML": "<b>B</b>", "Action": "applyFormatting:bold", "Class": "", "Title": "Bold (Ctrl+B)" },
+		{ "HTML": "<i>I</i>", "Action": "applyFormatting:italic", "Class": "", "Title": "Italic (Ctrl+I)" },
+		{ "HTML": "<code>&lt;&gt;</code>", "Action": "applyFormatting:code", "Class": "", "Title": "Inline Code (Ctrl+E)" },
+		{ "HTML": "#", "Action": "applyFormatting:heading", "Class": "", "Title": "Heading" },
+		{ "HTML": "[&thinsp;]", "Action": "applyFormatting:link", "Class": "", "Title": "Link" },
+		{ "HTML": "&#x25A3;", "Action": "openImagePicker", "Class": "pict-mde-sidebar-btn-image", "Title": "Insert Image" }
+	],
+
+	"ButtonsBR":
+	[
+	],
+
 	// CSS for the markdown editor
 	"CSS": /*css*/`
 /* ---- Container ---- */
@@ -94,7 +121,7 @@ module.exports = (
 	transition: background-color 0.15s ease;
 }
 
-/* ---- Left controls (✕ top, ↑↓ bottom) ---- */
+/* ---- Left controls column ---- */
 .pict-mde-left-controls
 {
 	flex: 0 0 22px;
@@ -104,13 +131,18 @@ module.exports = (
 	justify-content: space-between;
 	padding: 2px 0;
 }
-.pict-mde-left-btn-remove
+
+/* ---- Left-side quadrants ---- */
+.pict-mde-quadrant-tl
 {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	position: sticky;
 	top: 2px;
 	z-index: 2;
 }
-.pict-mde-left-controls-bottom
+.pict-mde-quadrant-bl
 {
 	display: flex;
 	flex-direction: column;
@@ -120,6 +152,8 @@ module.exports = (
 	bottom: 2px;
 	z-index: 2;
 }
+
+/* ---- Left-side buttons (shared base) ---- */
 .pict-mde-left-btn
 {
 	display: flex;
@@ -147,32 +181,32 @@ module.exports = (
 {
 	color: #222;
 }
-.pict-mde-left-btn-remove:hover
+.pict-mde-btn-remove:hover
 {
 	color: #CC3333;
 }
-.pict-mde-left-btn-linenums
+.pict-mde-btn-linenums
 {
 	font-size: 11px;
 	font-weight: 600;
 	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
 }
-/* Highlight when line numbers are active */
-.pict-mde.pict-mde-linenums-on .pict-mde-left-btn-linenums
+/* Highlight when controls are active */
+.pict-mde.pict-mde-controls-on .pict-mde-btn-linenums
 {
 	color: #4A90D9;
 }
-.pict-mde-left-btn-preview
+.pict-mde-btn-preview
 {
 	font-size: 11px;
 }
 /* Highlight the preview button when preview is visible (not hidden) */
-.pict-mde-segment:not(.pict-mde-preview-hidden) .pict-mde-left-btn-preview
+.pict-mde-segment:not(.pict-mde-preview-hidden) .pict-mde-btn-preview
 {
 	color: #4A90D9;
 }
 /* Dim preview button when this segment's preview is individually hidden */
-.pict-mde-segment.pict-mde-preview-hidden .pict-mde-left-btn-preview
+.pict-mde-segment.pict-mde-preview-hidden .pict-mde-btn-preview
 {
 	color: #CCC;
 }
@@ -323,16 +357,19 @@ module.exports = (
 	background: #9CB4C8;
 }
 
-/* ---- Right sidebar (formatting buttons) ---- */
+/* ---- Right sidebar column ---- */
 .pict-mde-sidebar
 {
 	flex: 0 0 30px;
 	display: flex;
+	flex-direction: column;
 	align-items: flex-start;
+	justify-content: space-between;
 	position: relative;
 }
 
-.pict-mde-sidebar-actions
+/* ---- Right-side quadrants ---- */
+.pict-mde-quadrant-tr
 {
 	display: flex;
 	flex-direction: column;
@@ -345,23 +382,58 @@ module.exports = (
 	position: sticky;
 	top: 0;
 }
-/* Active segment always shows its sidebar */
-.pict-mde-segment.pict-mde-active .pict-mde-sidebar-actions
+.pict-mde-quadrant-br
+{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	padding: 4px 0;
+	width: 100%;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+	position: sticky;
+	bottom: 0;
+}
+
+/* Active segment always shows its right-side quadrants */
+.pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,
+.pict-mde-segment.pict-mde-active .pict-mde-quadrant-br
 {
 	opacity: 1;
 }
 /* When no segment is active, hovering shows both left + right controls */
-.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-sidebar-actions
+.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-quadrant-tr,
+.pict-mde:not(:has(.pict-mde-active)) .pict-mde-segment:hover .pict-mde-quadrant-br
 {
 	opacity: 1;
 }
-/* When JS sets a cursor-relative offset, switch from sticky to absolute positioning */
-.pict-mde-sidebar-actions.pict-mde-sidebar-at-cursor
+
+/* ---- Controls-hidden mode: right quadrants show faintly on hover ---- */
+.pict-mde.pict-mde-controls-hidden .pict-mde-quadrant-tr,
+.pict-mde.pict-mde-controls-hidden .pict-mde-quadrant-br
+{
+	opacity: 0;
+}
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment:hover .pict-mde-quadrant-tr,
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment:hover .pict-mde-quadrant-br
+{
+	opacity: 0.3;
+}
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,
+.pict-mde.pict-mde-controls-hidden .pict-mde-segment.pict-mde-active .pict-mde-quadrant-br
+{
+	opacity: 0.3;
+}
+
+/* When JS sets a cursor-relative offset, switch TR from sticky to absolute positioning */
+.pict-mde-quadrant-tr.pict-mde-sidebar-at-cursor
 {
 	position: absolute;
 	top: var(--pict-mde-sidebar-top, 0px);
 }
 
+/* ---- Right-side buttons (shared base) ---- */
 .pict-mde-sidebar-btn
 {
 	display: flex;
@@ -491,12 +563,12 @@ module.exports = (
 	white-space: nowrap;
 }
 
-/* ---- Line number toggle: hidden by default, shown when class present ---- */
+/* ---- Line number / controls toggle: gutters hidden by default ---- */
 .pict-mde .cm-editor .cm-gutters
 {
 	display: none;
 }
-.pict-mde.pict-mde-linenums-on .cm-editor .cm-gutters
+.pict-mde.pict-mde-controls-on .cm-editor .cm-gutters
 {
 	display: flex;
 }
