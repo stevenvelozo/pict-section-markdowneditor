@@ -79,6 +79,36 @@ module.exports.attach = function attach(pView)
 						}
 					}
 					return false;
+				},
+				drop: (pEvent, pEditorView) =>
+				{
+					// Intercept image file drops at the CodeMirror level to prevent
+					// the browser from inserting the image as a raw DOM element.
+					// Without this, both CodeMirror's default drop behavior AND the
+					// container-level handler fire, causing rendering artifacts.
+					if (pView._dragSourceIndex >= 0)
+					{
+						return false; // segment-reorder drag, not a file drop
+					}
+					if (!pEvent.dataTransfer || !pEvent.dataTransfer.files || pEvent.dataTransfer.files.length < 1)
+					{
+						return false;
+					}
+					let tmpFile = pEvent.dataTransfer.files[0];
+					if (tmpFile.type && tmpFile.type.startsWith('image/'))
+					{
+						pEvent.preventDefault();
+						pEvent.stopPropagation();
+						pView._processImageFile(tmpFile, pSegmentIndex);
+						// Clean up the dragover visual indicator on the container
+						let tmpContainer = pEditorView.dom.closest('.pict-mde-segment-editor');
+						if (tmpContainer)
+						{
+							tmpContainer.classList.remove('pict-mde-image-dragover');
+						}
+						return true;
+					}
+					return false;
 				}
 			})
 		);
@@ -250,6 +280,36 @@ module.exports.attach = function attach(pView)
 				tmpPrevEditor.focus();
 				tmpPrevEditor.dispatch({ selection: { anchor: tmpLastLine.from + tmpTargetCol } });
 				pView._setActiveSegment(tmpPrevInternalIndex);
+			}
+		}, true); // <-- capture phase
+
+		// -- Capture-phase drop listener for image files --
+		// Safari processes native contenteditable drops before CodeMirror's
+		// bubble-phase domEventHandlers fire, which can insert a raw <img>
+		// element into the editor DOM.  A capture-phase listener fires first
+		// and lets us preventDefault() before the browser acts.
+		tmpEditorView.contentDOM.addEventListener('drop', function (pEvent)
+		{
+			if (pView._dragSourceIndex >= 0)
+			{
+				return; // segment-reorder drag
+			}
+			if (!pEvent.dataTransfer || !pEvent.dataTransfer.files || pEvent.dataTransfer.files.length < 1)
+			{
+				return;
+			}
+			let tmpFile = pEvent.dataTransfer.files[0];
+			if (tmpFile.type && tmpFile.type.startsWith('image/'))
+			{
+				pEvent.preventDefault();
+				pEvent.stopPropagation();
+				pView._processImageFile(tmpFile, pSegmentIndex);
+				// Clean up the dragover visual indicator
+				let tmpEditorEl = document.getElementById(`PictMDE-SegmentEditor-${pSegmentIndex}`);
+				if (tmpEditorEl)
+				{
+					tmpEditorEl.classList.remove('pict-mde-image-dragover');
+				}
 			}
 		}, true); // <-- capture phase
 	};

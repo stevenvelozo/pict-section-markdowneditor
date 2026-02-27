@@ -232,8 +232,9 @@ module.exports = (
 /* ---- Editor body (middle column) ---- */
 .pict-mde-segment-body
 {
-	flex: 1 1 auto;
+	flex: 1 1 0%;
 	min-width: 0;
+	overflow: hidden;
 	background: #FFFFFF;
 	transition: background-color 0.15s ease;
 }
@@ -291,6 +292,13 @@ module.exports = (
 	display: block;
 	border-top: 1px solid #EDEDED;
 	background: #FCFCFC;
+	overflow: hidden;
+}
+/* Constrain images in the rich preview even if pict-section-content CSS loads late */
+.pict-mde-rich-preview img
+{
+	max-width: 100%;
+	height: auto;
 }
 /* Global preview toggle: hide all previews when container has class */
 .pict-mde.pict-mde-previews-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,

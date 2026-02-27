@@ -120,14 +120,15 @@ class PictSectionMarkdownEditor extends libPictViewClass
 
 	onAfterRender(pRenderable)
 	{
-		// Inject CSS from all registered views
-		this.pict.CSSMap.injectCSS();
-
 		if (!this.initialRenderComplete)
 		{
 			this.onAfterInitialRender();
 			this.initialRenderComplete = true;
 		}
+
+		// Inject CSS from all registered views (after onAfterInitialRender so
+		// that pict-section-content's CSS is registered before injection)
+		this.pict.CSSMap.injectCSS();
 
 		return super.onAfterRender(pRenderable);
 	}
