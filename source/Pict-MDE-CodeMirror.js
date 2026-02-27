@@ -26,6 +26,63 @@ module.exports.attach = function attach(pView)
 		// Build the extensions array
 		let tmpExtensions = [];
 
+		// Keyboard shortcuts for formatting, inter-segment navigation, and image paste handling
+		// IMPORTANT: Must be added BEFORE consumer extensions (e.g. basicSetup) so that
+		// our domEventHandlers fire before CM6's internal keymap handlers.
+		tmpExtensions.push(
+			tmpCM.EditorView.domEventHandlers(
+			{
+				keydown: (pEvent, pEditorView) =>
+				{
+					// Ctrl/Cmd + B = bold
+					if ((pEvent.ctrlKey || pEvent.metaKey) && pEvent.key === 'b')
+					{
+						pEvent.preventDefault();
+						pView.applyFormatting(pSegmentIndex, 'bold');
+						return true;
+					}
+					// Ctrl/Cmd + I = italic
+					if ((pEvent.ctrlKey || pEvent.metaKey) && pEvent.key === 'i')
+					{
+						pEvent.preventDefault();
+						pView.applyFormatting(pSegmentIndex, 'italic');
+						return true;
+					}
+					// Ctrl/Cmd + E = inline code
+					if ((pEvent.ctrlKey || pEvent.metaKey) && pEvent.key === 'e')
+					{
+						pEvent.preventDefault();
+						pView.applyFormatting(pSegmentIndex, 'code');
+						return true;
+					}
+
+				},
+				paste: (pEvent, pEditorView) =>
+				{
+					// Check clipboard for image data
+					let tmpItems = pEvent.clipboardData && pEvent.clipboardData.items;
+					if (!tmpItems)
+					{
+						return false;
+					}
+					for (let i = 0; i < tmpItems.length; i++)
+					{
+						if (tmpItems[i].type.startsWith('image/'))
+						{
+							pEvent.preventDefault();
+							let tmpFile = tmpItems[i].getAsFile();
+							if (tmpFile)
+							{
+								pView._processImageFile(tmpFile, pSegmentIndex);
+							}
+							return true;
+						}
+					}
+					return false;
+				}
+			})
+		);
+
 		// Add consumer-provided extensions (e.g. basicSetup, markdown())
 		if (tmpCM.extensions && Array.isArray(tmpCM.extensions))
 		{
@@ -77,60 +134,6 @@ module.exports.attach = function attach(pView)
 			})
 		);
 
-		// Keyboard shortcuts for formatting and image paste handling
-		tmpExtensions.push(
-			tmpCM.EditorView.domEventHandlers(
-			{
-				keydown: (pEvent, pEditorView) =>
-				{
-					// Ctrl/Cmd + B = bold
-					if ((pEvent.ctrlKey || pEvent.metaKey) && pEvent.key === 'b')
-					{
-						pEvent.preventDefault();
-						pView.applyFormatting(pSegmentIndex, 'bold');
-						return true;
-					}
-					// Ctrl/Cmd + I = italic
-					if ((pEvent.ctrlKey || pEvent.metaKey) && pEvent.key === 'i')
-					{
-						pEvent.preventDefault();
-						pView.applyFormatting(pSegmentIndex, 'italic');
-						return true;
-					}
-					// Ctrl/Cmd + E = inline code
-					if ((pEvent.ctrlKey || pEvent.metaKey) && pEvent.key === 'e')
-					{
-						pEvent.preventDefault();
-						pView.applyFormatting(pSegmentIndex, 'code');
-						return true;
-					}
-				},
-				paste: (pEvent, pEditorView) =>
-				{
-					// Check clipboard for image data
-					let tmpItems = pEvent.clipboardData && pEvent.clipboardData.items;
-					if (!tmpItems)
-					{
-						return false;
-					}
-					for (let i = 0; i < tmpItems.length; i++)
-					{
-						if (tmpItems[i].type.startsWith('image/'))
-						{
-							pEvent.preventDefault();
-							let tmpFile = tmpItems[i].getAsFile();
-							if (tmpFile)
-							{
-								pView._processImageFile(tmpFile, pSegmentIndex);
-							}
-							return true;
-						}
-					}
-					return false;
-				}
-			})
-		);
-
 		// Collapse long data URIs in image markdown so the editor is readable
 		let tmpCollapseExtension = pView._buildDataURICollapseExtension();
 		if (tmpCollapseExtension)
@@ -161,6 +164,94 @@ module.exports.attach = function attach(pView)
 		});
 
 		pView._segmentEditors[pSegmentIndex] = tmpEditorView;
+
+		// -- Inter-segment arrow-key navigation --
+		// Use a capture-phase DOM listener so we intercept ArrowDown/ArrowUp
+		// BEFORE CodeMirror's internal keymap handlers process them.
+		tmpEditorView.contentDOM.addEventListener('keydown', function (pEvent)
+		{
+			if (pEvent.key !== 'ArrowDown' && pEvent.key !== 'ArrowUp')
+			{
+				return;
+			}
+			// Don't interfere if a modifier key is held (selection, etc.)
+			if (pEvent.shiftKey || pEvent.ctrlKey || pEvent.metaKey || pEvent.altKey)
+			{
+				return;
+			}
+
+			let tmpState = tmpEditorView.state;
+			let tmpCursorPos = tmpState.selection.main.head;
+			let tmpLine = tmpState.doc.lineAt(tmpCursorPos);
+			let tmpColumnOffset = tmpCursorPos - tmpLine.from;
+
+			if (pEvent.key === 'ArrowDown')
+			{
+				// Only navigate when cursor is on the very last line
+				if (tmpLine.to < tmpState.doc.length)
+				{
+					return; // not on last line — let CM handle it
+				}
+
+				// Find next segment
+				let tmpOrderedIndices = pView._getOrderedSegmentIndices();
+				let tmpLogicalIndex = pView._getLogicalIndex(pSegmentIndex);
+				if (tmpLogicalIndex < 0 || tmpLogicalIndex >= tmpOrderedIndices.length - 1)
+				{
+					return; // last segment — nowhere to go
+				}
+
+				let tmpNextInternalIndex = tmpOrderedIndices[tmpLogicalIndex + 1];
+				let tmpNextEditor = pView._segmentEditors[tmpNextInternalIndex];
+				if (!tmpNextEditor)
+				{
+					return;
+				}
+
+				pEvent.preventDefault();
+				pEvent.stopPropagation();
+
+				// Focus the next editor and place cursor on the first line
+				let tmpFirstLine = tmpNextEditor.state.doc.line(1);
+				let tmpTargetCol = Math.min(tmpColumnOffset, tmpFirstLine.to - tmpFirstLine.from);
+				tmpNextEditor.focus();
+				tmpNextEditor.dispatch({ selection: { anchor: tmpFirstLine.from + tmpTargetCol } });
+				pView._setActiveSegment(tmpNextInternalIndex);
+			}
+			else if (pEvent.key === 'ArrowUp')
+			{
+				// Only navigate when cursor is on the very first line
+				if (tmpLine.number > 1)
+				{
+					return; // not on first line — let CM handle it
+				}
+
+				// Find previous segment
+				let tmpOrderedIndices = pView._getOrderedSegmentIndices();
+				let tmpLogicalIndex = pView._getLogicalIndex(pSegmentIndex);
+				if (tmpLogicalIndex <= 0)
+				{
+					return; // first segment — nowhere to go
+				}
+
+				let tmpPrevInternalIndex = tmpOrderedIndices[tmpLogicalIndex - 1];
+				let tmpPrevEditor = pView._segmentEditors[tmpPrevInternalIndex];
+				if (!tmpPrevEditor)
+				{
+					return;
+				}
+
+				pEvent.preventDefault();
+				pEvent.stopPropagation();
+
+				// Focus the previous editor and place cursor on the last line
+				let tmpLastLine = tmpPrevEditor.state.doc.line(tmpPrevEditor.state.doc.lines);
+				let tmpTargetCol = Math.min(tmpColumnOffset, tmpLastLine.to - tmpLastLine.from);
+				tmpPrevEditor.focus();
+				tmpPrevEditor.dispatch({ selection: { anchor: tmpLastLine.from + tmpTargetCol } });
+				pView._setActiveSegment(tmpPrevInternalIndex);
+			}
+		}, true); // <-- capture phase
 	};
 
 	/**
