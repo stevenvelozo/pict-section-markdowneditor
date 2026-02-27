@@ -580,5 +580,181 @@ module.exports = (
 {
 	display: flex;
 }
+
+/* ============================================
+   RESPONSIVE: Tablet / Phone (max-width: 768px)
+   ============================================ */
+@media (max-width: 768px)
+{
+	/* Prevent any horizontal overflow in the editor */
+	.pict-mde
+	{
+		overflow-x: hidden;
+		max-width: 100%;
+	}
+
+	/* Reduce the left controls column width */
+	.pict-mde-left-controls
+	{
+		flex: 0 0 16px;
+	}
+	.pict-mde-left-btn
+	{
+		width: 16px;
+		height: 18px;
+		font-size: 10px;
+	}
+
+	/* Make left-side buttons always visible on touch (no hover) */
+	.pict-mde-left-btn
+	{
+		opacity: 0.6;
+	}
+
+	/* Narrow the drag handle */
+	.pict-mde-drag-handle
+	{
+		flex: 0 0 5px;
+	}
+
+	/* Shrink the right sidebar column */
+	.pict-mde-sidebar
+	{
+		flex: 0 0 24px;
+	}
+	.pict-mde-sidebar-btn
+	{
+		width: 20px;
+		height: 20px;
+		font-size: 11px;
+	}
+
+	/* Make right sidebar buttons always visible (touch devices) */
+	.pict-mde-quadrant-tr,
+	.pict-mde-quadrant-br
+	{
+		opacity: 0.7;
+	}
+	.pict-mde-segment.pict-mde-active .pict-mde-quadrant-tr,
+	.pict-mde-segment.pict-mde-active .pict-mde-quadrant-br
+	{
+		opacity: 1;
+	}
+
+	/* Reduce CodeMirror content padding */
+	.pict-mde-segment-editor .cm-editor .cm-content
+	{
+		padding: 6px 6px;
+	}
+
+	/* Reduce font size slightly for more content on screen */
+	.pict-mde-segment-editor .cm-editor .cm-scroller
+	{
+		font-size: 13px;
+	}
+
+	/* Add segment button: reduce left margin */
+	.pict-mde-add-segment
+	{
+		padding-left: 21px;
+	}
+
+	/* Rich preview: less padding */
+	.pict-mde-rich-preview .pict-content
+	{
+		padding: 8px;
+		font-size: 12px;
+	}
+
+	/* Image previews: smaller max dimensions */
+	.pict-mde-image-preview img
+	{
+		max-width: 120px;
+		max-height: 100px;
+	}
+
+	/* Rendered view: less padding */
+	.pict-mde-rendered-view
+	{
+		padding: 10px 8px;
+	}
+}
+
+/* ============================================
+   RESPONSIVE: Small phone (max-width: 480px)
+   ============================================ */
+@media (max-width: 480px)
+{
+	/* Wrap segment so left controls flow to the top as a horizontal bar */
+	.pict-mde-segment
+	{
+		flex-wrap: wrap;
+	}
+
+	/* Left controls become a horizontal toolbar at the top of the segment */
+	.pict-mde-left-controls
+	{
+		flex: 0 0 100%;
+		flex-direction: row;
+		justify-content: flex-start;
+		gap: 2px;
+		padding: 3px 4px;
+		order: -1;
+		background: #F5F5F5;
+		border-bottom: 1px solid #EDEDED;
+	}
+	.pict-mde-left-btn
+	{
+		width: 24px;
+		height: 24px;
+		font-size: 12px;
+		opacity: 0.7;
+	}
+
+	/* Left quadrants flow horizontally */
+	.pict-mde-quadrant-tl,
+	.pict-mde-quadrant-bl
+	{
+		flex-direction: row;
+		gap: 2px;
+		position: static;
+	}
+
+	/* Segment body: explicit basis so it fills the wrapped row */
+	.pict-mde-segment-body
+	{
+		flex: 1 1 calc(100% - 20px);
+	}
+
+	/* Hide drag handle on very small screens */
+	.pict-mde-drag-handle
+	{
+		display: none;
+	}
+
+	/* Right sidebar: further shrink */
+	.pict-mde-sidebar
+	{
+		flex: 0 0 20px;
+	}
+	.pict-mde-sidebar-btn
+	{
+		width: 18px;
+		height: 18px;
+		font-size: 10px;
+	}
+
+	/* Add segment: no left offset since controls are at top */
+	.pict-mde-add-segment
+	{
+		padding-left: 0;
+	}
+
+	/* Even tighter CodeMirror padding */
+	.pict-mde-segment-editor .cm-editor .cm-content
+	{
+		padding: 4px 4px;
+	}
+}
 `
 });
