@@ -618,6 +618,9 @@ class PictSectionMarkdownEditor extends libPictViewClass
 			else
 			{
 				tmpSegmentEl.classList.remove('pict-mde-preview-hidden');
+				// Render preview content when making it visible
+				this._updateRichPreviews(pSegmentIndex);
+				this._updateImagePreviews(pSegmentIndex);
 			}
 		}
 	}
