@@ -91,6 +91,24 @@ module.exports.attach = function attach(pView)
 		tmpPreviewEl.innerHTML = `<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;
 		tmpPreviewEl.classList.add('pict-mde-has-rich-preview');
 
+		// Resolve relative image URLs in the rendered HTML using ImageBaseURL
+		if (pView.options.ImageBaseURL)
+		{
+			let tmpImages = tmpPreviewEl.querySelectorAll('img');
+			for (let i = 0; i < tmpImages.length; i++)
+			{
+				let tmpSrc = tmpImages[i].getAttribute('src');
+				if (tmpSrc)
+				{
+					let tmpResolved = pView._resolveImageURL(tmpSrc);
+					if (tmpResolved !== tmpSrc)
+					{
+						tmpImages[i].setAttribute('src', tmpResolved);
+					}
+				}
+			}
+		}
+
 		// Bump generation counter for stale-render protection (mermaid is async)
 		let tmpGeneration = (pView._richPreviewGenerations[pSegmentIndex] || 0) + 1;
 		pView._richPreviewGenerations[pSegmentIndex] = tmpGeneration;
@@ -290,6 +308,24 @@ module.exports.attach = function attach(pView)
 		let tmpRenderedViewID = 'PictMDE-RenderedView';
 		tmpContainer.innerHTML = `<div class="pict-mde-rendered-view" id="${tmpRenderedViewID}"><div class="pict-content">${tmpRenderedHTML || ''}</div></div>`;
 		tmpContainer.classList.add('pict-mde-rendered-mode');
+
+		// Resolve relative image URLs in the rendered HTML using ImageBaseURL
+		if (pView.options.ImageBaseURL)
+		{
+			let tmpImages = tmpContainer.querySelectorAll('.pict-mde-rendered-view img');
+			for (let i = 0; i < tmpImages.length; i++)
+			{
+				let tmpSrc = tmpImages[i].getAttribute('src');
+				if (tmpSrc)
+				{
+					let tmpResolved = pView._resolveImageURL(tmpSrc);
+					if (tmpResolved !== tmpSrc)
+					{
+						tmpImages[i].setAttribute('src', tmpResolved);
+					}
+				}
+			}
+		}
 
 		// Bump generation for stale-render protection
 		pView._renderedViewGeneration++;

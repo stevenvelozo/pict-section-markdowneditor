@@ -215,6 +215,38 @@ class PictSectionMarkdownEditor extends libPictViewClass
 	}
 
 	/**
+	 * Resolve a URL relative to the configured ImageBaseURL.
+	 *
+	 * Absolute URLs (starting with /, http://, https://, data:) are returned
+	 * unchanged.  Relative URLs are prepended with this.options.ImageBaseURL.
+	 *
+	 * @param {string} pURL - The URL to resolve
+	 * @returns {string} The resolved URL
+	 */
+	_resolveImageURL(pURL)
+	{
+		if (!pURL || !this.options.ImageBaseURL)
+		{
+			return pURL;
+		}
+
+		// Leave absolute URLs alone
+		if (pURL.startsWith('/') || pURL.startsWith('http://') || pURL.startsWith('https://') || pURL.startsWith('data:'))
+		{
+			return pURL;
+		}
+
+		let tmpBase = this.options.ImageBaseURL;
+		// Ensure base ends with /
+		if (tmpBase && !tmpBase.endsWith('/'))
+		{
+			tmpBase += '/';
+		}
+
+		return tmpBase + pURL;
+	}
+
+	/**
 	 * Build the full editor UI: render existing segments from data and the add-segment button.
 	 */
 	_buildEditorUI()

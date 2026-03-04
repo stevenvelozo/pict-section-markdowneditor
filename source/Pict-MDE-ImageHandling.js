@@ -189,7 +189,8 @@ module.exports.attach = function attach(pView)
 		for (let i = 0; i < tmpMatches.length; i++)
 		{
 			let tmpAlt = tmpMatches[i].alt.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-			let tmpURL = tmpMatches[i].url.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+			let tmpResolvedURL = pView._resolveImageURL(tmpMatches[i].url);
+			let tmpURL = tmpResolvedURL.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 			tmpHTML += `<div class="pict-mde-image-preview-item"><img src="${tmpURL}" alt="${tmpAlt}" /><span class="pict-mde-image-preview-label">${tmpAlt}</span></div>`;
 		}
 

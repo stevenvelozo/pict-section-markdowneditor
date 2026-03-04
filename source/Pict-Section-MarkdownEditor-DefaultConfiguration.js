@@ -62,6 +62,12 @@ module.exports = (
 	// for diagram/equation rendering; code highlighting works without CDN scripts.
 	"EnableRichPreview": true,
 
+	// Base URL prepended to relative image URLs in image and rich previews.
+	// Set this to the directory-level path (e.g. "/content/") so that images
+	// referenced by filename in the markdown resolve correctly.
+	// Absolute URLs (starting with /, http://, https://, data:) are left as-is.
+	"ImageBaseURL": "",
+
 	// ---- Quadrant button definitions ----
 	// Each quadrant is an array of button objects:
 	//   HTML   — innerHTML for the button
