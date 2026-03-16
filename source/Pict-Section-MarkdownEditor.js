@@ -39,8 +39,14 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		// Whether controls (line numbers + right sidebar) are currently visible
 		this._controlsVisible = true;
 
-		// Whether rich previews are globally visible
-		this._previewsVisible = true;
+		// Current preview layout mode: "off", "bottom", "side", "tabbed"
+		this._previewMode = this.options.DefaultPreviewMode || 'off';
+
+		// Last non-off preview layout, for togglePreview() backward compatibility
+		this._lastPreviewLayout = 'bottom';
+
+		// Per-segment tab state in tabbed mode (keyed by logical index; "editor" or "preview")
+		this._segmentTabStates = {};
 
 		// Set of logical segment indices where preview has been individually hidden
 		this._hiddenPreviewSegments = {};
@@ -272,10 +278,8 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		tmpContainer.innerHTML = '';
 
 		// Restore toggle states on the container after clearing
-		if (!this._previewsVisible)
-		{
-			tmpContainer.classList.add('pict-mde-previews-hidden');
-		}
+		tmpContainer.classList.remove('pict-mde-preview-off', 'pict-mde-preview-bottom', 'pict-mde-preview-side', 'pict-mde-preview-tabbed', 'pict-mde-previews-hidden');
+		tmpContainer.classList.add('pict-mde-preview-' + this._previewMode);
 		if (this._controlsVisible)
 		{
 			tmpContainer.classList.add('pict-mde-controls-on');
@@ -336,6 +340,20 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		if (this._hiddenPreviewSegments[pIndex])
 		{
 			tmpSegmentElement.classList.add('pict-mde-preview-hidden');
+		}
+
+		// Restore per-segment tab state in tabbed mode
+		if (this._previewMode === 'tabbed' && this._segmentTabStates[pIndex] === 'preview')
+		{
+			tmpSegmentElement.classList.add('pict-mde-tab-showing-preview');
+			let tmpTabBar = tmpSegmentElement.querySelector('.pict-mde-tab-bar');
+			if (tmpTabBar)
+			{
+				let tmpEditorTab = tmpTabBar.querySelector('[data-tab="editor"]');
+				let tmpPreviewTab = tmpTabBar.querySelector('[data-tab="preview"]');
+				if (tmpEditorTab) { tmpEditorTab.classList.remove('pict-mde-tab-active'); }
+				if (tmpPreviewTab) { tmpPreviewTab.classList.add('pict-mde-tab-active'); }
+			}
 		}
 
 		// Wire up drag-and-drop on the drag handle
@@ -576,29 +594,144 @@ class PictSectionMarkdownEditor extends libPictViewClass
 	 * When hidden globally, individual segment overrides are preserved
 	 * so that restoring global visibility returns to the per-segment state.
 	 *
+	 * Backward compatible: toggles between "off" and the last-used preview layout.
+	 *
 	 * @param {boolean} [pVisible] - If provided, set to this value; otherwise toggle
 	 */
 	togglePreview(pVisible)
 	{
 		if (typeof (pVisible) === 'boolean')
 		{
-			this._previewsVisible = pVisible;
+			if (pVisible)
+			{
+				this.setPreviewMode(this._lastPreviewLayout || 'bottom');
+			}
+			else
+			{
+				this.setPreviewMode('off');
+			}
 		}
 		else
 		{
-			this._previewsVisible = !this._previewsVisible;
+			if (this._previewMode === 'off')
+			{
+				this.setPreviewMode(this._lastPreviewLayout || 'bottom');
+			}
+			else
+			{
+				this.setPreviewMode('off');
+			}
 		}
+	}
+
+	/**
+	 * Set the preview layout mode.
+	 *
+	 * @param {string} pMode - One of "off", "bottom", "side", "tabbed"
+	 */
+	setPreviewMode(pMode)
+	{
+		let tmpValidModes = ['off', 'bottom', 'side', 'tabbed'];
+		if (tmpValidModes.indexOf(pMode) < 0)
+		{
+			this.log.warn(`PICT-MarkdownEditor setPreviewMode: unknown mode "${pMode}".`);
+			return;
+		}
+
+		// Remember the last non-off mode for toggle restore
+		if (pMode !== 'off')
+		{
+			this._lastPreviewLayout = pMode;
+		}
+
+		this._previewMode = pMode;
 
 		let tmpContainer = this._getContainerElement();
 		if (tmpContainer)
 		{
-			if (this._previewsVisible)
+			tmpContainer.classList.remove('pict-mde-preview-off', 'pict-mde-preview-bottom', 'pict-mde-preview-side', 'pict-mde-preview-tabbed', 'pict-mde-previews-hidden');
+			tmpContainer.classList.add('pict-mde-preview-' + pMode);
+		}
+
+		// When switching to a visible preview mode, trigger preview renders
+		// for all segments to ensure they are up to date
+		if (pMode !== 'off')
+		{
+			let tmpOrderedIndices = this._getOrderedSegmentIndices();
+			for (let i = 0; i < tmpOrderedIndices.length; i++)
 			{
-				tmpContainer.classList.remove('pict-mde-previews-hidden');
+				this._updateRichPreviews(tmpOrderedIndices[i]);
+				this._updateImagePreviews(tmpOrderedIndices[i]);
 			}
-			else
+		}
+	}
+
+	/**
+	 * Cycle through preview layout modes: off → bottom → side → tabbed → off.
+	 *
+	 * Accepts a segment index as first argument (ignored) for compatibility
+	 * with the quadrant button system.
+	 *
+	 * @param {number} [pSegmentIndex] - Ignored; present for quadrant button compat
+	 */
+	cyclePreviewMode(pSegmentIndex)
+	{
+		let tmpModeOrder = ['off', 'bottom', 'side', 'tabbed'];
+		let tmpCurrentIndex = tmpModeOrder.indexOf(this._previewMode);
+		let tmpNextIndex = (tmpCurrentIndex + 1) % tmpModeOrder.length;
+		this.setPreviewMode(tmpModeOrder[tmpNextIndex]);
+	}
+
+	/**
+	 * Switch a segment between editor and preview tabs (tabbed mode).
+	 *
+	 * @param {number} pSegmentIndex - The internal segment index
+	 * @param {string} pTab - "editor" or "preview"
+	 */
+	switchSegmentTab(pSegmentIndex, pTab)
+	{
+		let tmpLogicalIndex = this._getLogicalIndex(pSegmentIndex);
+		if (tmpLogicalIndex < 0)
+		{
+			return;
+		}
+
+		this._segmentTabStates[tmpLogicalIndex] = pTab;
+
+		let tmpSegmentEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		if (!tmpSegmentEl)
+		{
+			return;
+		}
+
+		// Toggle the preview-showing class on the segment
+		if (pTab === 'preview')
+		{
+			tmpSegmentEl.classList.add('pict-mde-tab-showing-preview');
+			// Trigger preview render when switching to preview tab
+			this._updateRichPreviews(pSegmentIndex);
+			this._updateImagePreviews(pSegmentIndex);
+		}
+		else
+		{
+			tmpSegmentEl.classList.remove('pict-mde-tab-showing-preview');
+		}
+
+		// Update tab bar active state
+		let tmpTabBar = document.getElementById(`PictMDE-TabBar-${pSegmentIndex}`);
+		if (tmpTabBar)
+		{
+			let tmpTabs = tmpTabBar.querySelectorAll('.pict-mde-tab');
+			for (let i = 0; i < tmpTabs.length; i++)
 			{
-				tmpContainer.classList.add('pict-mde-previews-hidden');
+				if (tmpTabs[i].getAttribute('data-tab') === pTab)
+				{
+					tmpTabs[i].classList.add('pict-mde-tab-active');
+				}
+				else
+				{
+					tmpTabs[i].classList.remove('pict-mde-tab-active');
+				}
 			}
 		}
 	}
@@ -895,6 +1028,22 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		}
 		this._hiddenPreviewSegments = tmpNewHidden;
 
+		// Update per-segment tab states after removal
+		let tmpNewTabStates = {};
+		for (let tmpKey in this._segmentTabStates)
+		{
+			let tmpIdx = parseInt(tmpKey, 10);
+			if (tmpIdx < tmpLogicalIndex)
+			{
+				tmpNewTabStates[tmpIdx] = this._segmentTabStates[tmpKey];
+			}
+			else if (tmpIdx > tmpLogicalIndex)
+			{
+				tmpNewTabStates[tmpIdx - 1] = this._segmentTabStates[tmpKey];
+			}
+		}
+		this._segmentTabStates = tmpNewTabStates;
+
 		this._buildEditorUI();
 	}
 
@@ -925,6 +1074,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 
 		// Swap per-segment hidden preview state to follow the moved segment
 		this._swapHiddenPreviewState(tmpLogicalIndex, tmpLogicalIndex - 1);
+		this._swapSegmentTabStates(tmpLogicalIndex, tmpLogicalIndex - 1);
 
 		this._buildEditorUI();
 	}
@@ -951,6 +1101,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 
 		// Swap per-segment hidden preview state to follow the moved segment
 		this._swapHiddenPreviewState(tmpLogicalIndex, tmpLogicalIndex + 1);
+		this._swapSegmentTabStates(tmpLogicalIndex, tmpLogicalIndex + 1);
 
 		this._buildEditorUI();
 	}
@@ -1123,6 +1274,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		}
 		this._richPreviewTimers = {};
 		this._richPreviewGenerations = {};
+		this._segmentTabStates = {};
 	}
 }
 

@@ -183,6 +183,9 @@ module.exports.attach = function attach(pView)
 		// Reorder per-segment hidden preview state to follow the moved segment
 		pView._reorderHiddenPreviewState(tmpFromLogical, tmpInsertAt);
 
+		// Reorder per-segment tab states to follow the moved segment
+		pView._reorderSegmentTabStates(tmpFromLogical, tmpInsertAt);
+
 		pView._buildEditorUI();
 	};
 
@@ -246,6 +249,65 @@ module.exports.attach = function attach(pView)
 
 		if (tmpAHidden) { pView._hiddenPreviewSegments[pIndexB] = true; }
 		else { delete pView._hiddenPreviewSegments[pIndexB]; }
+	};
+
+	/**
+	 * Reorder the segment tab states after a splice-based move
+	 * (remove from pFrom, insert at pTo).
+	 *
+	 * @param {number} pFrom - The logical index the segment was removed from
+	 * @param {number} pTo - The logical index the segment was inserted at
+	 */
+	pView._reorderSegmentTabStates = function _reorderSegmentTabStates(pFrom, pTo)
+	{
+		if (pFrom === pTo)
+		{
+			return;
+		}
+
+		let tmpKeys = Object.keys(pView._segmentTabStates).map((k) => parseInt(k, 10));
+		if (tmpKeys.length === 0)
+		{
+			return;
+		}
+
+		let tmpMaxIndex = Math.max(...tmpKeys, pFrom, pTo);
+		let tmpStates = [];
+		for (let i = 0; i <= tmpMaxIndex; i++)
+		{
+			tmpStates.push(pView._segmentTabStates[i] || 'editor');
+		}
+
+		let tmpMovedState = tmpStates.splice(pFrom, 1)[0];
+		tmpStates.splice(pTo, 0, tmpMovedState);
+
+		pView._segmentTabStates = {};
+		for (let i = 0; i < tmpStates.length; i++)
+		{
+			if (tmpStates[i] !== 'editor')
+			{
+				pView._segmentTabStates[i] = tmpStates[i];
+			}
+		}
+	};
+
+	/**
+	 * Swap the segment tab states of two logical indices.
+	 * Used when moveSegmentUp/Down swaps adjacent segments.
+	 *
+	 * @param {number} pIndexA - First logical index
+	 * @param {number} pIndexB - Second logical index
+	 */
+	pView._swapSegmentTabStates = function _swapSegmentTabStates(pIndexA, pIndexB)
+	{
+		let tmpA = pView._segmentTabStates[pIndexA] || 'editor';
+		let tmpB = pView._segmentTabStates[pIndexB] || 'editor';
+
+		if (tmpB !== 'editor') { pView._segmentTabStates[pIndexA] = tmpB; }
+		else { delete pView._segmentTabStates[pIndexA]; }
+
+		if (tmpA !== 'editor') { pView._segmentTabStates[pIndexB] = tmpA; }
+		else { delete pView._segmentTabStates[pIndexB]; }
 	};
 
 	// -- Active Segment Management --

@@ -3,5 +3,6 @@
     "LibraryObjectName": "MarkdownEditorExample",
     "LibraryOutputFolder": "/Users/steven/Code/retold/modules/pict/pict-section-markdowneditor/example_applications/markdown_editor/dist/",
     "LibraryUniminifiedFileName": "markdown_editor_example.js",
-    "LibraryMinifiedFileName": "markdown_editor_example.min.js"
+    "LibraryMinifiedFileName": "markdown_editor_example.min.js",
+    "BrowserifyIgnore": []
 }

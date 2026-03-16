@@ -609,6 +609,18 @@ suite
 				);
 				test
 				(
+					'Segment template should contain tab bar and preview pane wrapper',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						let tmpSegTemplate = tmpConfig.Templates.find((t) => t.Hash === 'MarkdownEditor-Segment');
+						Expect(tmpSegTemplate.Template).to.contain('pict-mde-tab-bar');
+						Expect(tmpSegTemplate.Template).to.contain('pict-mde-preview-pane');
+						return fDone();
+					}
+				);
+				test
+				(
 					'Segment template should contain file input for image uploads',
 					(fDone) =>
 					{
@@ -842,12 +854,15 @@ suite
 			{
 				test
 				(
-					'Instance should initialize with previews visible',
+					'Instance should initialize with preview mode off',
 					(fDone) =>
 					{
 						let tmpPict = configureTestPict();
 						let tmpView = tmpPict.addView('Pict-View-TestMDE-PrevTog1', {}, libPictSectionMarkdownEditor);
-						Expect(tmpView._previewsVisible).to.equal(true);
+						Expect(tmpView._previewMode).to.equal('off');
+						Expect(tmpView._lastPreviewLayout).to.equal('bottom');
+						Expect(tmpView._segmentTabStates).to.be.an('object');
+						Expect(Object.keys(tmpView._segmentTabStates).length).to.equal(0);
 						Expect(tmpView._hiddenPreviewSegments).to.be.an('object');
 						Expect(Object.keys(tmpView._hiddenPreviewSegments).length).to.equal(0);
 						return fDone();
@@ -855,16 +870,16 @@ suite
 				);
 				test
 				(
-					'togglePreview should toggle global preview visibility',
+					'togglePreview should toggle between off and last preview layout',
 					(fDone) =>
 					{
 						let tmpPict = configureTestPict();
 						let tmpView = tmpPict.addView('Pict-View-TestMDE-PrevTog2', {}, libPictSectionMarkdownEditor);
-						Expect(tmpView._previewsVisible).to.equal(true);
+						Expect(tmpView._previewMode).to.equal('off');
 						tmpView.togglePreview();
-						Expect(tmpView._previewsVisible).to.equal(false);
+						Expect(tmpView._previewMode).to.equal('bottom');
 						tmpView.togglePreview();
-						Expect(tmpView._previewsVisible).to.equal(true);
+						Expect(tmpView._previewMode).to.equal('off');
 						return fDone();
 					}
 				);
@@ -876,11 +891,11 @@ suite
 						let tmpPict = configureTestPict();
 						let tmpView = tmpPict.addView('Pict-View-TestMDE-PrevTog3', {}, libPictSectionMarkdownEditor);
 						tmpView.togglePreview(false);
-						Expect(tmpView._previewsVisible).to.equal(false);
+						Expect(tmpView._previewMode).to.equal('off');
 						tmpView.togglePreview(false);
-						Expect(tmpView._previewsVisible).to.equal(false);
+						Expect(tmpView._previewMode).to.equal('off');
 						tmpView.togglePreview(true);
-						Expect(tmpView._previewsVisible).to.equal(true);
+						Expect(tmpView._previewMode).to.equal('bottom');
 						return fDone();
 					}
 				);
@@ -898,10 +913,14 @@ suite
 				);
 				test
 				(
-					'CSS should contain preview toggle styles',
+					'CSS should contain preview mode styles',
 					(fDone) =>
 					{
 						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.CSS).to.contain('pict-mde-preview-off');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-preview-bottom');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-preview-side');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-preview-tabbed');
 						Expect(tmpConfig.CSS).to.contain('pict-mde-previews-hidden');
 						Expect(tmpConfig.CSS).to.contain('pict-mde-preview-hidden');
 						return fDone();
@@ -909,13 +928,148 @@ suite
 				);
 				test
 				(
-					'ButtonsBL config should contain a toggleSegmentPreview action with preview class',
+					'ButtonsBL config should contain a cyclePreviewMode action with preview class',
 					(fDone) =>
 					{
 						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
-						let tmpPreviewBtn = tmpConfig.ButtonsBL.find((b) => b.Action === 'toggleSegmentPreview');
+						let tmpPreviewBtn = tmpConfig.ButtonsBL.find((b) => b.Action === 'cyclePreviewMode');
 						Expect(tmpPreviewBtn).to.be.an('object');
 						Expect(tmpPreviewBtn.Class).to.contain('pict-mde-btn-preview');
+						return fDone();
+					}
+				);
+			}
+		);
+
+		suite
+		(
+			'Preview Layout Modes',
+			() =>
+			{
+				test
+				(
+					'DefaultPreviewMode configuration option should default to off',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.DefaultPreviewMode).to.equal('off');
+						return fDone();
+					}
+				);
+				test
+				(
+					'setPreviewMode should set mode to valid values',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-PM1', {}, libPictSectionMarkdownEditor);
+						tmpView.setPreviewMode('bottom');
+						Expect(tmpView._previewMode).to.equal('bottom');
+						tmpView.setPreviewMode('side');
+						Expect(tmpView._previewMode).to.equal('side');
+						tmpView.setPreviewMode('tabbed');
+						Expect(tmpView._previewMode).to.equal('tabbed');
+						tmpView.setPreviewMode('off');
+						Expect(tmpView._previewMode).to.equal('off');
+						return fDone();
+					}
+				);
+				test
+				(
+					'setPreviewMode should reject invalid mode',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-PM2', {}, libPictSectionMarkdownEditor);
+						tmpView.setPreviewMode('invalid');
+						Expect(tmpView._previewMode).to.equal('off');
+						return fDone();
+					}
+				);
+				test
+				(
+					'setPreviewMode should update _lastPreviewLayout for non-off modes',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-PM3', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView._lastPreviewLayout).to.equal('bottom');
+						tmpView.setPreviewMode('side');
+						Expect(tmpView._lastPreviewLayout).to.equal('side');
+						tmpView.setPreviewMode('off');
+						Expect(tmpView._lastPreviewLayout).to.equal('side');
+						tmpView.togglePreview();
+						Expect(tmpView._previewMode).to.equal('side');
+						return fDone();
+					}
+				);
+				test
+				(
+					'cyclePreviewMode should cycle through all modes',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-PM4', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView._previewMode).to.equal('off');
+						tmpView.cyclePreviewMode(0);
+						Expect(tmpView._previewMode).to.equal('bottom');
+						tmpView.cyclePreviewMode(0);
+						Expect(tmpView._previewMode).to.equal('side');
+						tmpView.cyclePreviewMode(0);
+						Expect(tmpView._previewMode).to.equal('tabbed');
+						tmpView.cyclePreviewMode(0);
+						Expect(tmpView._previewMode).to.equal('off');
+						return fDone();
+					}
+				);
+				test
+				(
+					'switchSegmentTab should be a callable method',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView('Pict-View-TestMDE-PM5', {}, libPictSectionMarkdownEditor);
+						Expect(tmpView.switchSegmentTab).to.be.a('function');
+						// Should not throw even without DOM
+						tmpView.switchSegmentTab(999, 'preview');
+						return fDone();
+					}
+				);
+				test
+				(
+					'CSS should contain tab bar styles',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.CSS).to.contain('pict-mde-tab-bar');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-tab');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-tab-active');
+						Expect(tmpConfig.CSS).to.contain('pict-mde-tab-showing-preview');
+						return fDone();
+					}
+				);
+				test
+				(
+					'CSS should contain preview pane wrapper styles',
+					(fDone) =>
+					{
+						let tmpConfig = libPictSectionMarkdownEditor.default_configuration;
+						Expect(tmpConfig.CSS).to.contain('pict-mde-preview-pane');
+						return fDone();
+					}
+				);
+				test
+				(
+					'Instance should accept custom DefaultPreviewMode in options',
+					(fDone) =>
+					{
+						let tmpPict = configureTestPict();
+						let tmpView = tmpPict.addView(
+							'Pict-View-TestMDE-PM6',
+							{ DefaultPreviewMode: 'bottom' },
+							libPictSectionMarkdownEditor
+						);
+						Expect(tmpView._previewMode).to.equal('bottom');
 						return fDone();
 					}
 				);
@@ -1047,7 +1201,7 @@ suite
 						Expect(tmpConfig.ButtonsBL[0].Action).to.equal('moveSegmentUp');
 						Expect(tmpConfig.ButtonsBL[1].Action).to.equal('moveSegmentDown');
 						Expect(tmpConfig.ButtonsBL[2].Action).to.equal('toggleControls');
-						Expect(tmpConfig.ButtonsBL[3].Action).to.equal('toggleSegmentPreview');
+						Expect(tmpConfig.ButtonsBL[3].Action).to.equal('cyclePreviewMode');
 						return fDone();
 					}
 				);

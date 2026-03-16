@@ -18,9 +18,15 @@ module.exports = (
 	</div>
 	<div class="pict-mde-drag-handle" draggable="true" title="Drag to reorder"></div>
 	<div class="pict-mde-segment-body">
+		<div class="pict-mde-tab-bar" id="PictMDE-TabBar-{~D:Record.SegmentIndex~}">
+			<button type="button" class="pict-mde-tab pict-mde-tab-active" data-tab="editor" onclick="{~D:Record.ViewIdentifier~}.switchSegmentTab({~D:Record.SegmentIndex~}, 'editor')">Edit</button>
+			<button type="button" class="pict-mde-tab" data-tab="preview" onclick="{~D:Record.ViewIdentifier~}.switchSegmentTab({~D:Record.SegmentIndex~}, 'preview')">Preview</button>
+		</div>
 		<div class="pict-mde-segment-editor" id="PictMDE-SegmentEditor-{~D:Record.SegmentIndex~}"></div>
-		<div class="pict-mde-image-preview" id="PictMDE-ImagePreview-{~D:Record.SegmentIndex~}"></div>
-		<div class="pict-mde-rich-preview" id="PictMDE-RichPreview-{~D:Record.SegmentIndex~}"></div>
+		<div class="pict-mde-preview-pane" id="PictMDE-PreviewPane-{~D:Record.SegmentIndex~}">
+			<div class="pict-mde-image-preview" id="PictMDE-ImagePreview-{~D:Record.SegmentIndex~}"></div>
+			<div class="pict-mde-rich-preview" id="PictMDE-RichPreview-{~D:Record.SegmentIndex~}"></div>
+		</div>
 	</div>
 	<div class="pict-mde-sidebar" id="PictMDE-Sidebar-{~D:Record.SegmentIndex~}">
 		<div class="pict-mde-quadrant-tr"></div>
@@ -62,6 +68,13 @@ module.exports = (
 	// for diagram/equation rendering; code highlighting works without CDN scripts.
 	"EnableRichPreview": true,
 
+	// Default preview layout mode: "off", "bottom", "side", "tabbed"
+	//   off       — no preview (default)
+	//   bottom    — preview below the editor
+	//   side      — editor and preview side-by-side
+	//   tabbed    — per-segment tabs switching between editor and preview
+	"DefaultPreviewMode": "off",
+
 	// Base URL prepended to relative image URLs in image and rich previews.
 	// Set this to the directory-level path (e.g. "/content/") so that images
 	// referenced by filename in the markdown resolve correctly.
@@ -89,7 +102,7 @@ module.exports = (
 		{ "HTML": "&uarr;", "Action": "moveSegmentUp", "Class": "pict-mde-btn-move", "Title": "Move Up" },
 		{ "HTML": "&darr;", "Action": "moveSegmentDown", "Class": "pict-mde-btn-move", "Title": "Move Down" },
 		{ "HTML": "&#x229E;", "Action": "toggleControls", "Class": "pict-mde-btn-linenums", "Title": "Toggle Controls" },
-		{ "HTML": "&#x25CE;", "Action": "toggleSegmentPreview", "Class": "pict-mde-btn-preview", "Title": "Toggle Preview" }
+		{ "HTML": "&#x25CE;", "Action": "cyclePreviewMode", "Class": "pict-mde-btn-preview", "Title": "Cycle Preview Mode" }
 	],
 
 	"ButtonsTR":
@@ -206,13 +219,15 @@ module.exports = (
 {
 	font-size: 11px;
 }
-/* Highlight the preview button when preview is visible (not hidden) */
-.pict-mde-segment:not(.pict-mde-preview-hidden) .pict-mde-btn-preview
+/* Preview button: highlight when any preview mode is active */
+.pict-mde.pict-mde-preview-bottom .pict-mde-btn-preview,
+.pict-mde.pict-mde-preview-side .pict-mde-btn-preview,
+.pict-mde.pict-mde-preview-tabbed .pict-mde-btn-preview
 {
 	color: #4A90D9;
 }
-/* Dim preview button when this segment's preview is individually hidden */
-.pict-mde-segment.pict-mde-preview-hidden .pict-mde-btn-preview
+/* Dim preview button when mode is off */
+.pict-mde.pict-mde-preview-off .pict-mde-btn-preview
 {
 	color: #CCC;
 }
@@ -306,15 +321,115 @@ module.exports = (
 	max-width: 100%;
 	height: auto;
 }
-/* Global preview toggle: hide all previews when container has class */
-.pict-mde.pict-mde-previews-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,
-.pict-mde.pict-mde-previews-hidden .pict-mde-image-preview.pict-mde-has-images
+/* ---- Preview layout modes ---- */
+
+/* Tab bar: hidden by default, shown only in tabbed mode */
+.pict-mde-tab-bar
 {
 	display: none;
 }
-/* Per-segment preview toggle: hide previews for a specific segment */
-.pict-mde-segment.pict-mde-preview-hidden .pict-mde-rich-preview.pict-mde-has-rich-preview,
-.pict-mde-segment.pict-mde-preview-hidden .pict-mde-image-preview.pict-mde-has-images
+.pict-mde.pict-mde-preview-tabbed .pict-mde-tab-bar
+{
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid #EDEDED;
+	background: #F8F8F8;
+}
+.pict-mde-tab
+{
+	padding: 4px 12px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	font-size: 12px;
+	color: #888;
+	border-bottom: 2px solid transparent;
+	font-family: inherit;
+}
+.pict-mde-tab:hover
+{
+	color: #222;
+}
+.pict-mde-tab.pict-mde-tab-active
+{
+	color: #4A90D9;
+	border-bottom-color: #4A90D9;
+}
+
+/* Off mode: hide all preview panes and tab bars */
+.pict-mde.pict-mde-preview-off .pict-mde-preview-pane
+{
+	display: none;
+}
+.pict-mde.pict-mde-preview-off .pict-mde-tab-bar
+{
+	display: none;
+}
+/* Legacy class alias for backward compatibility */
+.pict-mde.pict-mde-previews-hidden .pict-mde-preview-pane
+{
+	display: none;
+}
+
+/* Bottom mode: vertical stacking (default flex-column behavior) */
+.pict-mde.pict-mde-preview-bottom .pict-mde-segment-body
+{
+	display: flex;
+	flex-direction: column;
+}
+
+/* Side-by-side mode: editor and preview side by side */
+.pict-mde.pict-mde-preview-side .pict-mde-segment-body
+{
+	display: flex;
+	flex-direction: row;
+}
+.pict-mde.pict-mde-preview-side .pict-mde-segment-editor
+{
+	flex: 1 1 50%;
+	min-width: 0;
+	overflow: hidden;
+}
+.pict-mde.pict-mde-preview-side .pict-mde-preview-pane
+{
+	flex: 1 1 50%;
+	min-width: 0;
+	overflow: auto;
+	border-left: 1px solid #EDEDED;
+}
+/* Side-by-side: remove top borders since preview is beside, not below */
+.pict-mde.pict-mde-preview-side .pict-mde-rich-preview.pict-mde-has-rich-preview
+{
+	border-top: none;
+}
+.pict-mde.pict-mde-preview-side .pict-mde-image-preview.pict-mde-has-images
+{
+	border-top: none;
+}
+
+/* Tabbed mode: default hides preview, shows editor */
+.pict-mde.pict-mde-preview-tabbed .pict-mde-segment-body
+{
+	display: flex;
+	flex-direction: column;
+}
+.pict-mde.pict-mde-preview-tabbed .pict-mde-preview-pane
+{
+	display: none;
+}
+/* Tabbed mode: when showing preview, hide editor and show preview */
+.pict-mde.pict-mde-preview-tabbed .pict-mde-segment.pict-mde-tab-showing-preview .pict-mde-segment-editor
+{
+	display: none;
+}
+.pict-mde.pict-mde-preview-tabbed .pict-mde-segment.pict-mde-tab-showing-preview .pict-mde-preview-pane
+{
+	display: block;
+}
+
+/* Per-segment preview hide: only applies in bottom and side modes */
+.pict-mde.pict-mde-preview-bottom .pict-mde-segment.pict-mde-preview-hidden .pict-mde-preview-pane,
+.pict-mde.pict-mde-preview-side .pict-mde-segment.pict-mde-preview-hidden .pict-mde-preview-pane
 {
 	display: none;
 }
@@ -663,6 +778,24 @@ module.exports = (
 	.pict-mde-add-segment
 	{
 		padding-left: 21px;
+	}
+
+	/* Side-by-side: fall back to vertical stacking on narrow screens */
+	.pict-mde.pict-mde-preview-side .pict-mde-segment-body
+	{
+		flex-direction: column;
+	}
+	.pict-mde.pict-mde-preview-side .pict-mde-preview-pane
+	{
+		border-left: none;
+		border-top: 1px solid #EDEDED;
+	}
+
+	/* Tab bar: smaller on tablet */
+	.pict-mde-tab
+	{
+		padding: 3px 8px;
+		font-size: 11px;
 	}
 
 	/* Rich preview: less padding */
