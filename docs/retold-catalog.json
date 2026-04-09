@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-02-21T19:18:36.018Z",
+	"Generated": "2026-04-09T23:24:10.994Z",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
 	"Groups": [
@@ -59,6 +59,16 @@
 			"Key": "example_applications",
 			"Description": "",
 			"Modules": [
+				{
+					"Name": ".data",
+					"Repo": ".data",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
 				{
 					"Name": "book_viewer",
 					"Repo": "book_viewer",
