@@ -74,9 +74,17 @@ module.exports.attach = function attach(pView)
 			return;
 		}
 
-		// Use pict-section-content's provider to parse the raw markdown into HTML
+		// Use pict-section-content's provider to parse the raw markdown into HTML.
+		// If a Vocabulary provider is registered on the pict instance,
+		// pass its resolver so vocabulary terms auto-link in the preview.
 		let tmpProvider = pView._getContentProvider();
-		let tmpRenderedHTML = tmpProvider.parseMarkdown(tmpContent);
+		let tmpVocabResolver = null;
+		if (pView.pict && pView.pict.providers && pView.pict.providers.Vocabulary
+			&& typeof pView.pict.providers.Vocabulary.getResolver === 'function')
+		{
+			tmpVocabResolver = pView.pict.providers.Vocabulary.getResolver();
+		}
+		let tmpRenderedHTML = tmpProvider.parseMarkdown(tmpContent, null, null, tmpVocabResolver);
 
 		if (!tmpRenderedHTML || tmpRenderedHTML.trim().length === 0)
 		{
@@ -90,6 +98,13 @@ module.exports.attach = function attach(pView)
 		let tmpPreviewID = `PictMDE-RichPreviewBody-${pSegmentIndex}`;
 		tmpPreviewEl.innerHTML = `<div class="pict-content" id="${tmpPreviewID}">${tmpRenderedHTML}</div>`;
 		tmpPreviewEl.classList.add('pict-mde-has-rich-preview');
+
+		// Wire vocabulary popover hover handlers if the provider is available
+		if (pView.pict && pView.pict.providers && pView.pict.providers.Vocabulary
+			&& typeof pView.pict.providers.Vocabulary.wirePopovers === 'function')
+		{
+			pView.pict.providers.Vocabulary.wirePopovers('#' + tmpPreviewID);
+		}
 
 		// Resolve relative image URLs in the rendered HTML using ImageBaseURL
 		if (pView.options.ImageBaseURL)
