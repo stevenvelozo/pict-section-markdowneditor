@@ -185,7 +185,7 @@ module.exports = (
 	cursor: pointer;
 	font-size: 12px;
 	padding: 0;
-	color: #888;
+	color: var(--theme-color-text-muted, #888);
 	line-height: 1;
 	font-family: inherit;
 	opacity: 0;
@@ -198,11 +198,11 @@ module.exports = (
 }
 .pict-mde-left-btn:hover
 {
-	color: #222;
+	color: var(--theme-color-text-primary, #222);
 }
 .pict-mde-btn-remove:hover
 {
-	color: #CC3333;
+	color: var(--theme-color-status-error, #CC3333);
 }
 .pict-mde-btn-linenums
 {
@@ -213,7 +213,7 @@ module.exports = (
 /* Highlight when controls are active */
 .pict-mde.pict-mde-controls-on .pict-mde-btn-linenums
 {
-	color: #4A90D9;
+	color: var(--theme-color-brand-primary, #4A90D9);
 }
 .pict-mde-btn-preview
 {
@@ -224,12 +224,12 @@ module.exports = (
 .pict-mde.pict-mde-preview-side .pict-mde-btn-preview,
 .pict-mde.pict-mde-preview-tabbed .pict-mde-btn-preview
 {
-	color: #4A90D9;
+	color: var(--theme-color-brand-primary, #4A90D9);
 }
 /* Dim preview button when mode is off */
 .pict-mde.pict-mde-preview-off .pict-mde-btn-preview
 {
-	color: #CCC;
+	color: var(--theme-color-border-default, #CCC);
 }
 
 /* ---- Drag handle (simple grey bar) ---- */
@@ -237,7 +237,7 @@ module.exports = (
 {
 	flex: 0 0 8px;
 	cursor: grab;
-	background: #EDEDED;
+	background: var(--theme-color-background-tertiary, #EDEDED);
 	transition: background-color 0.15s ease;
 	user-select: none;
 }
@@ -247,7 +247,7 @@ module.exports = (
 }
 .pict-mde-drag-handle:hover
 {
-	background: #C8C8C8;
+	background: var(--theme-color-border-default, #C8C8C8);
 }
 
 /* ---- Editor body (middle column) ---- */
@@ -256,7 +256,7 @@ module.exports = (
 	flex: 1 1 0%;
 	min-width: 0;
 	overflow: hidden;
-	background: #FFFFFF;
+	background: var(--theme-color-background-panel, #FFFFFF);
 	transition: background-color 0.15s ease;
 }
 .pict-mde-segment-editor
@@ -275,16 +275,16 @@ module.exports = (
 	flex-wrap: wrap;
 	gap: 8px;
 	padding: 8px 12px;
-	border-top: 1px solid #EDEDED;
+	border-top: 1px solid var(--theme-color-border-light, #EDEDED);
 }
 .pict-mde-image-preview img
 {
 	max-width: 200px;
 	max-height: 150px;
 	border-radius: 3px;
-	border: 1px solid #E0E0E0;
+	border: 1px solid var(--theme-color-border-default, #E0E0E0);
 	object-fit: contain;
-	background: #F8F8F8;
+	background: var(--theme-color-background-secondary, #F8F8F8);
 }
 .pict-mde-image-preview-item
 {
@@ -295,7 +295,7 @@ module.exports = (
 {
 	display: block;
 	font-size: 10px;
-	color: #999;
+	color: var(--theme-color-text-muted, #999);
 	margin-top: 2px;
 	max-width: 200px;
 	overflow: hidden;
@@ -311,8 +311,8 @@ module.exports = (
 .pict-mde-rich-preview.pict-mde-has-rich-preview
 {
 	display: block;
-	border-top: 1px solid #EDEDED;
-	background: #FCFCFC;
+	border-top: 1px solid var(--theme-color-border-light, #EDEDED);
+	background: var(--theme-color-background-panel, #FCFCFC);
 	overflow: hidden;
 }
 /* Constrain images in the rich preview even if pict-section-content CSS loads late */
@@ -332,8 +332,8 @@ module.exports = (
 {
 	display: flex;
 	gap: 0;
-	border-bottom: 1px solid #EDEDED;
-	background: #F8F8F8;
+	border-bottom: 1px solid var(--theme-color-border-light, #EDEDED);
+	background: var(--theme-color-background-secondary, #F8F8F8);
 }
 .pict-mde-tab
 {
@@ -342,18 +342,18 @@ module.exports = (
 	background: transparent;
 	cursor: pointer;
 	font-size: 12px;
-	color: #888;
+	color: var(--theme-color-text-muted, #888);
 	border-bottom: 2px solid transparent;
 	font-family: inherit;
 }
 .pict-mde-tab:hover
 {
-	color: #222;
+	color: var(--theme-color-text-primary, #222);
 }
 .pict-mde-tab.pict-mde-tab-active
 {
-	color: #4A90D9;
-	border-bottom-color: #4A90D9;
+	color: var(--theme-color-brand-primary, #4A90D9);
+	border-bottom-color: var(--theme-color-brand-primary, #4A90D9);
 }
 
 /* Off mode: hide all preview panes and tab bars */
@@ -395,7 +395,7 @@ module.exports = (
 	flex: 1 1 50%;
 	min-width: 0;
 	overflow: auto;
-	border-left: 1px solid #EDEDED;
+	border-left: 1px solid var(--theme-color-border-light, #EDEDED);
 }
 /* Side-by-side: remove top borders since preview is beside, not below */
 .pict-mde.pict-mde-preview-side .pict-mde-rich-preview.pict-mde-has-rich-preview
@@ -462,7 +462,7 @@ module.exports = (
 .pict-mde-rendered-view
 {
 	padding: 16px 20px;
-	background: #FFFFFF;
+	background: var(--theme-color-background-panel, #FFFFFF);
 	min-height: 120px;
 }
 .pict-mde-rendered-view .pict-content
@@ -479,11 +479,11 @@ module.exports = (
 /* Focused / active editor gets subtle warm background */
 .pict-mde-segment.pict-mde-active .pict-mde-segment-body
 {
-	background: #FAFAF5;
+	background: var(--theme-color-background-secondary, #FAFAF5);
 }
 .pict-mde-segment.pict-mde-active .pict-mde-drag-handle
 {
-	background: #9CB4C8;
+	background: var(--theme-color-border-strong, #9CB4C8);
 }
 
 /* ---- Right sidebar column ---- */
@@ -576,13 +576,13 @@ module.exports = (
 	font-size: 12px;
 	padding: 0;
 	border-radius: 3px;
-	color: #666;
+	color: var(--theme-color-text-secondary, #666);
 	line-height: 1;
 	font-family: inherit;
 }
 .pict-mde-sidebar-btn:hover
 {
-	color: #222;
+	color: var(--theme-color-text-primary, #222);
 }
 .pict-mde-sidebar-btn b
 {
@@ -611,10 +611,10 @@ module.exports = (
 	display: block;
 	width: 100%;
 	padding: 7px;
-	border: 2px dashed #D0D0D0;
+	border: 2px dashed var(--theme-color-border-default, #D0D0D0);
 	border-radius: 4px;
 	background: transparent;
-	color: #999;
+	color: var(--theme-color-text-muted, #999);
 	font-size: 12px;
 	font-weight: 600;
 	cursor: pointer;
@@ -622,15 +622,15 @@ module.exports = (
 }
 .pict-mde-btn-add:hover
 {
-	border-color: #4A90D9;
-	color: #4A90D9;
+	border-color: var(--theme-color-brand-primary, #4A90D9);
+	color: var(--theme-color-brand-primary, #4A90D9);
 	background: rgba(74, 144, 217, 0.04);
 }
 
 /* ---- Image drag-over indicator ---- */
 .pict-mde-segment-editor.pict-mde-image-dragover
 {
-	outline: 2px dashed #4A90D9;
+	outline: 2px dashed var(--theme-color-brand-primary, #4A90D9);
 	outline-offset: -2px;
 }
 
@@ -643,11 +643,11 @@ module.exports = (
 /* ---- Drop target indicators for drag reorder ---- */
 .pict-mde-segment.pict-mde-drag-over-top
 {
-	box-shadow: 0 -2px 0 0 #4A90D9;
+	box-shadow: 0 -2px 0 0 var(--theme-color-brand-primary, #4A90D9);
 }
 .pict-mde-segment.pict-mde-drag-over-bottom
 {
-	box-shadow: 0 2px 0 0 #4A90D9;
+	box-shadow: 0 2px 0 0 var(--theme-color-brand-primary, #4A90D9);
 }
 
 /* ---- CodeMirror overrides inside segments ---- */
@@ -672,21 +672,21 @@ module.exports = (
 }
 .pict-mde-segment-editor .cm-editor .cm-gutters
 {
-	background: #F8F8F8;
-	border-right: 1px solid #E8E8E8;
-	color: #BBB;
+	background: var(--theme-color-background-secondary, #F8F8F8);
+	border-right: 1px solid var(--theme-color-border-light, #E8E8E8);
+	color: var(--theme-color-text-muted, #BBB);
 }
 
 /* ---- Collapsed data URI widget ---- */
 .pict-mde-data-uri-collapsed
 {
 	display: inline;
-	background: #F0F0F0;
-	color: #888;
+	background: var(--theme-color-background-tertiary, #F0F0F0);
+	color: var(--theme-color-text-muted, #888);
 	font-size: 11px;
 	padding: 1px 4px;
 	border-radius: 3px;
-	border: 1px solid #E0E0E0;
+	border: 1px solid var(--theme-color-border-default, #E0E0E0);
 	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
 	cursor: default;
 	white-space: nowrap;
@@ -788,7 +788,7 @@ module.exports = (
 	.pict-mde.pict-mde-preview-side .pict-mde-preview-pane
 	{
 		border-left: none;
-		border-top: 1px solid #EDEDED;
+		border-top: 1px solid var(--theme-color-border-light, #EDEDED);
 	}
 
 	/* Tab bar: smaller on tablet */
@@ -839,8 +839,8 @@ module.exports = (
 		gap: 2px;
 		padding: 3px 4px;
 		order: -1;
-		background: #F5F5F5;
-		border-bottom: 1px solid #EDEDED;
+		background: var(--theme-color-background-secondary, #F5F5F5);
+		border-bottom: 1px solid var(--theme-color-border-light, #EDEDED);
 	}
 	.pict-mde-left-btn
 	{
