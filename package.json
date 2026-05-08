@@ -1,6 +1,6 @@
 {
 	"name": "pict-section-markdowneditor",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"description": "Pict segmented markdown editor section built on CodeMirror",
 	"main": "source/Pict-Section-MarkdownEditor.js",
 	"scripts": {
