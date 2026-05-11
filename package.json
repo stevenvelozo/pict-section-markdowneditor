@@ -24,9 +24,9 @@
 		"browser-env": "^3.3.0",
 		"chai": "^6.2.2",
 		"mocha": "^11.7.5",
-		"pict": "^1.0.363",
-		"pict-docuserve": "^0.1.5",
-		"quackage": "^1.1.0"
+		"pict": "^1.0.367",
+		"pict-docuserve": "^0.1.6",
+		"quackage": "^1.2.3"
 	},
 	"mocha": {
 		"diff": true,
@@ -47,7 +47,7 @@
 		]
 	},
 	"dependencies": {
-		"pict-section-content": "^0.1.5",
+		"pict-section-content": "^0.1.8",
 		"pict-view": "^1.0.68"
 	}
 }
