@@ -433,7 +433,18 @@ class PictSectionMarkdownEditor extends libPictViewClass
 				{
 					tmpButton.className += ' ' + tmpBtnConfig.Class;
 				}
-				tmpButton.innerHTML = tmpBtnConfig.HTML || '';
+				// Run the button HTML through Pict's template engine so
+				// `{~I:Name~}` tags expand into themable SVG icons from
+				// pict.providers.Icon.  Plain HTML strings (e.g. the
+				// stylized `<b>B</b>` formatting buttons) pass through
+				// unchanged — the parser is a no-op when no template tags
+				// are present.
+				let tmpHTML = tmpBtnConfig.HTML || '';
+				if (tmpHTML && typeof (this.pict.parseTemplate) === 'function')
+				{
+					tmpHTML = this.pict.parseTemplate(tmpHTML, {});
+				}
+				tmpButton.innerHTML = tmpHTML;
 				tmpButton.title = tmpBtnConfig.Title || '';
 
 				// Parse the action string: "methodName" or "methodName:arg"

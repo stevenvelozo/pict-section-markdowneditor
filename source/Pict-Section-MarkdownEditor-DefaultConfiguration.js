@@ -92,27 +92,32 @@ module.exports = (
 	// Left quadrant buttons (TL, BL) get the "pict-mde-left-btn" base class.
 	// Right quadrant buttons (TR, BR) get the "pict-mde-sidebar-btn" base class.
 
+	// Quadrant button HTML is parsed through Pict's template engine before
+	// being assigned as innerHTML, so `{~I:Name~}` template tags resolve
+	// to themable SVG icons from pict.providers.Icon.  Typographic
+	// formatting buttons (Bold / Italic / Inline-code / Heading / Link)
+	// stay as stylized letters — that's the markdown-editor convention.
 	"ButtonsTL":
 	[
-		{ "HTML": "&times;", "Action": "removeSegment", "Class": "pict-mde-btn-remove", "Title": "Remove Segment" }
+		{ "HTML": "{~I:Close~}",    "Action": "removeSegment",    "Class": "pict-mde-btn-remove",    "Title": "Remove Segment" }
 	],
 
 	"ButtonsBL":
 	[
-		{ "HTML": "&uarr;", "Action": "moveSegmentUp", "Class": "pict-mde-btn-move", "Title": "Move Up" },
-		{ "HTML": "&darr;", "Action": "moveSegmentDown", "Class": "pict-mde-btn-move", "Title": "Move Down" },
-		{ "HTML": "&#x229E;", "Action": "toggleControls", "Class": "pict-mde-btn-linenums", "Title": "Toggle Controls" },
-		{ "HTML": "&#x25CE;", "Action": "cyclePreviewMode", "Class": "pict-mde-btn-preview", "Title": "Cycle Preview Mode" }
+		{ "HTML": "{~I:ArrowUp~}",   "Action": "moveSegmentUp",     "Class": "pict-mde-btn-move",     "Title": "Move Up" },
+		{ "HTML": "{~I:ArrowDown~}", "Action": "moveSegmentDown",   "Class": "pict-mde-btn-move",     "Title": "Move Down" },
+		{ "HTML": "{~I:Settings~}",  "Action": "toggleControls",    "Class": "pict-mde-btn-linenums", "Title": "Toggle Controls" },
+		{ "HTML": "{~I:Eye~}",       "Action": "cyclePreviewMode",  "Class": "pict-mde-btn-preview",  "Title": "Cycle Preview Mode" }
 	],
 
 	"ButtonsTR":
 	[
-		{ "HTML": "<b>B</b>", "Action": "applyFormatting:bold", "Class": "", "Title": "Bold (Ctrl+B)" },
-		{ "HTML": "<i>I</i>", "Action": "applyFormatting:italic", "Class": "", "Title": "Italic (Ctrl+I)" },
-		{ "HTML": "<code>&lt;&gt;</code>", "Action": "applyFormatting:code", "Class": "", "Title": "Inline Code (Ctrl+E)" },
-		{ "HTML": "#", "Action": "applyFormatting:heading", "Class": "", "Title": "Heading" },
-		{ "HTML": "[&thinsp;]", "Action": "applyFormatting:link", "Class": "", "Title": "Link" },
-		{ "HTML": "&#x25A3;", "Action": "openImagePicker", "Class": "pict-mde-sidebar-btn-image", "Title": "Insert Image" }
+		{ "HTML": "<b>B</b>",            "Action": "applyFormatting:bold",     "Class": "", "Title": "Bold (Ctrl+B)" },
+		{ "HTML": "<i>I</i>",            "Action": "applyFormatting:italic",   "Class": "", "Title": "Italic (Ctrl+I)" },
+		{ "HTML": "<code>&lt;&gt;</code>","Action": "applyFormatting:code",    "Class": "", "Title": "Inline Code (Ctrl+E)" },
+		{ "HTML": "#",                   "Action": "applyFormatting:heading",  "Class": "", "Title": "Heading" },
+		{ "HTML": "[&thinsp;]",          "Action": "applyFormatting:link",     "Class": "", "Title": "Link" },
+		{ "HTML": "{~I:Image~}",         "Action": "openImagePicker",          "Class": "pict-mde-sidebar-btn-image", "Title": "Insert Image" }
 	],
 
 	"ButtonsBR":
@@ -124,7 +129,7 @@ module.exports = (
 /* ---- Container ---- */
 .pict-mde
 {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	font-family: var(--theme-typography-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
 	font-size: 14px;
 }
 
@@ -208,7 +213,7 @@ module.exports = (
 {
 	font-size: 11px;
 	font-weight: 600;
-	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
+	font-family: var(--theme-typography-family-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', monospace);
 }
 /* Highlight when controls are active */
 .pict-mde.pict-mde-controls-on .pict-mde-btn-linenums
@@ -597,7 +602,7 @@ module.exports = (
 .pict-mde-sidebar-btn code
 {
 	font-size: 10px;
-	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
+	font-family: var(--theme-typography-family-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', monospace);
 }
 
 /* ---- Add segment button ---- */
@@ -657,7 +662,7 @@ module.exports = (
 }
 .pict-mde-segment-editor .cm-editor .cm-scroller
 {
-	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+	font-family: var(--theme-typography-family-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace);
 	font-size: 14px;
 	line-height: 1.6;
 }
@@ -687,7 +692,7 @@ module.exports = (
 	padding: 1px 4px;
 	border-radius: 3px;
 	border: 1px solid var(--theme-color-border-default, #E0E0E0);
-	font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', monospace;
+	font-family: var(--theme-typography-family-mono, 'SFMono-Regular', 'SF Mono', 'Menlo', monospace);
 	cursor: default;
 	white-space: nowrap;
 }
