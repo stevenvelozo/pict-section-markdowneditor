@@ -1,6 +1,6 @@
 {
 	"name": "pict-section-markdowneditor",
-	"version": "1.0.13",
+	"version": "1.0.14",
 	"description": "Pict segmented markdown editor section built on CodeMirror",
 	"main": "source/Pict-Section-MarkdownEditor.js",
 	"scripts": {
@@ -25,7 +25,7 @@
 		"chai": "^6.2.2",
 		"mocha": "^11.7.5",
 		"pict": "^1.0.367",
-		"pict-docuserve": "^0.1.6",
+		"pict-docuserve": "^0.1.7",
 		"quackage": "^1.2.3"
 	},
 	"mocha": {
@@ -47,7 +47,7 @@
 		]
 	},
 	"dependencies": {
-		"pict-section-content": "^0.1.8",
+		"pict-section-content": "^1.0.0",
 		"pict-view": "^1.0.68"
 	}
 }
