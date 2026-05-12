@@ -184,7 +184,11 @@ class PictSectionMarkdownEditor extends libPictViewClass
 
 	/**
 	 * Resolve how the view can be referenced from global onclick handlers.
-	 * Returns a string like "_Pict.views.MyViewHash"
+	 * Returns a string like "_Pict.views['MyViewHash']" — bracket syntax
+	 * is required so view hashes containing hyphens (e.g.
+	 * "ContentEditor-MarkdownEditor") parse correctly. Dot access
+	 * (`_Pict.views.X-Y`) is read as subtraction by the JS parser and
+	 * the onclick silently no-ops.
 	 *
 	 * @returns {string}
 	 */
@@ -195,7 +199,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		{
 			if (tmpViews[tmpViewHash] === this)
 			{
-				return `_Pict.views.${tmpViewHash}`;
+				return `_Pict.views['${tmpViewHash}']`;
 			}
 		}
 		return `_Pict.servicesMap.PictView['${this.Hash}']`;
