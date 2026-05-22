@@ -1,115 +1,116 @@
 {
-	"Generated": "2026-04-10T17:25:39.689Z",
+	"Generated": "2026-05-22T05:45:37.526Z",
+	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
-	"Groups": [
-		{
-			"Name": "Dist",
-			"Key": "dist",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "indoctrinate_content_staging",
-					"Repo": "indoctrinate_content_staging",
-					"Group": "dist",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Docs",
-			"Key": "docs",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "css",
-					"Repo": "css",
-					"Group": "docs",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": [
-						"css/docuserve.css"
-					]
-				},
-				{
-					"Name": "examples",
-					"Repo": "examples",
-					"Group": "docs",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": [
-						"examples/book_viewer.md",
-						"examples/embedded_editor.md",
-						"examples/markdown_editor.md",
-						"examples/server_upload.md"
-					]
-				}
-			]
-		},
-		{
-			"Name": "Example_applications",
-			"Key": "example_applications",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": ".data",
-					"Repo": ".data",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "book_viewer",
-					"Repo": "book_viewer",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "embedded_editor",
-					"Repo": "embedded_editor",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "markdown_editor",
-					"Repo": "markdown_editor",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "server_upload",
-					"Repo": "server_upload",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		}
-	]
+	"Module": {
+		"Name": "pict-section-markdowneditor",
+		"Repo": "pict-section-markdowneditor",
+		"Group": "",
+		"Branch": "master",
+		"HasDocs": true,
+		"HasCover": true,
+		"Sidebar": [
+			{
+				"Title": "Getting Started",
+				"Children": [
+					{
+						"Title": "Overview",
+						"Path": "README.md"
+					},
+					{
+						"Title": "Configuration",
+						"Path": "configuration.md"
+					}
+				]
+			},
+			{
+				"Title": "Reference",
+				"Children": [
+					{
+						"Title": "API Reference",
+						"Path": "api.md"
+					},
+					{
+						"Title": "Image Upload",
+						"Path": "image_upload.md"
+					}
+				]
+			},
+			{
+				"Title": "Examples",
+				"Children": [
+					{
+						"Title": "Markdown Editor",
+						"Path": "examples/markdown_editor.md"
+					},
+					{
+						"Title": "Embedded Editor",
+						"Path": "examples/embedded_editor.md"
+					},
+					{
+						"Title": "Book Viewer",
+						"Path": "examples/book_viewer.md"
+					},
+					{
+						"Title": "Server Upload",
+						"Path": "examples/server_upload.md"
+					}
+				]
+			},
+			{
+				"Title": "Retold Ecosystem",
+				"Children": [
+					{
+						"Title": "Pict",
+						"Path": "pict/pict/README.md"
+					},
+					{
+						"Title": "Pict Application",
+						"Path": "pict/pict-application/README.md"
+					},
+					{
+						"Title": "Pict View",
+						"Path": "pict/pict-view/README.md"
+					},
+					{
+						"Title": "Pict Provider",
+						"Path": "pict/pict-provider/README.md"
+					},
+					{
+						"Title": "Pict Section Content",
+						"Path": "pict/pict-section-content/README.md"
+					},
+					{
+						"Title": "Fable",
+						"Path": "fable/fable/README.md"
+					},
+					{
+						"Title": "Indoctrinate",
+						"Path": "utility/indoctrinate/README.md"
+					}
+				]
+			}
+		],
+		"DocFiles": [
+			".nojekyll",
+			"README.md",
+			"_brand.json",
+			"_sidebar.md",
+			"_topbar.md",
+			"_version.json",
+			"api.md",
+			"configuration.md",
+			"cover.md",
+			"examples/book_viewer.md",
+			"examples/embedded_editor.md",
+			"examples/markdown_editor.md",
+			"examples/server_upload.md",
+			"image_upload.md",
+			"index.html",
+			"retold-catalog.json",
+			"retold-keyword-index.json"
+		]
+	},
+	"Groups": []
 }
