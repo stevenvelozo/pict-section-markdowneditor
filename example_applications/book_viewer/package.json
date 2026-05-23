@@ -32,5 +32,13 @@
 		"@codemirror/state": "^6.5.4",
 		"codemirror": "^6.0.2",
 		"esbuild": "^0.27.3"
+	},
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Book Viewer",
+			"Summary": "A long-form ten-chapter book rendered with pict-section-content and click-to-edit per section — Mermaid, KaTeX, code, and tables included.",
+			"Complexity": "Intermediate"
+		}
 	}
 }

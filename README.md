@@ -1,5 +1,7 @@
 # pict-section-markdowneditor
 
+> **[&#9654; Read the Pict-Section-Markdowneditor Documentation](https://stevenvelozo.github.io/pict-section-markdowneditor/)** &mdash; interactive docs with the full API reference.
+
 A segmented markdown editor for Pict applications, built on CodeMirror v6. Split your document into independently editable segments, reorder them with drag-and-drop, and get live rich previews with syntax highlighting, mermaid diagrams, and KaTeX math.
 
 ## Quick Start

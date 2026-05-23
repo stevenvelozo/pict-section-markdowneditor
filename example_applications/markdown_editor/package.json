@@ -32,5 +32,13 @@
 		"@codemirror/state": "^6.5.4",
 		"codemirror": "^6.0.2",
 		"esbuild": "^0.27.3"
+	},
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Markdown Editor",
+			"Summary": "The full-featured segmented editor with quadrant buttons, drag-and-drop reorder, rich previews, Mermaid diagrams, KaTeX math, and code highlighting — every default capability turned on.",
+			"Complexity": "Basic"
+		}
 	}
 }

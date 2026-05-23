@@ -59,5 +59,13 @@
 			"from": "../../node_modules/pict/dist/pict.min.js.map",
 			"to": "dist/pict.min.js.map"
 		}
-	]
+	],
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Server Upload",
+			"Summary": "The onImageUpload hook wired to a live Orator backend — paste, drag, or pick an image and the editor inserts a server URL instead of an embedded base64 data URI.",
+			"Complexity": "Intermediate"
+		}
+	}
 }

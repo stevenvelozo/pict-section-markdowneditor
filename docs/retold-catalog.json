@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-05-22T05:45:37.526Z",
+	"Generated": "2026-05-23T01:49:40.677Z",
 	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
@@ -42,19 +42,19 @@
 				"Children": [
 					{
 						"Title": "Markdown Editor",
-						"Path": "examples/markdown_editor.md"
+						"Path": "examples/markdown_editor/README.md"
 					},
 					{
 						"Title": "Embedded Editor",
-						"Path": "examples/embedded_editor.md"
+						"Path": "examples/embedded_editor/README.md"
 					},
 					{
 						"Title": "Book Viewer",
-						"Path": "examples/book_viewer.md"
+						"Path": "examples/book_viewer/README.md"
 					},
 					{
 						"Title": "Server Upload",
-						"Path": "examples/server_upload.md"
+						"Path": "examples/server_upload/README.md"
 					}
 				]
 			},
@@ -63,31 +63,31 @@
 				"Children": [
 					{
 						"Title": "Pict",
-						"Path": "pict/pict/README.md"
+						"Path": "https://stevenvelozo.github.io/pict/README.md"
 					},
 					{
 						"Title": "Pict Application",
-						"Path": "pict/pict-application/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-application/README.md"
 					},
 					{
 						"Title": "Pict View",
-						"Path": "pict/pict-view/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-view/README.md"
 					},
 					{
 						"Title": "Pict Provider",
-						"Path": "pict/pict-provider/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-provider/README.md"
 					},
 					{
 						"Title": "Pict Section Content",
-						"Path": "pict/pict-section-content/README.md"
+						"Path": "https://stevenvelozo.github.io/pict-section-content/README.md"
 					},
 					{
 						"Title": "Fable",
-						"Path": "fable/fable/README.md"
+						"Path": "https://stevenvelozo.github.io/fable/README.md"
 					},
 					{
 						"Title": "Indoctrinate",
-						"Path": "utility/indoctrinate/README.md"
+						"Path": "https://stevenvelozo.github.io/indoctrinate/README.md"
 					}
 				]
 			}
@@ -96,15 +96,33 @@
 			".nojekyll",
 			"README.md",
 			"_brand.json",
+			"_cover.md",
 			"_sidebar.md",
 			"_topbar.md",
 			"_version.json",
 			"api.md",
 			"configuration.md",
 			"cover.md",
+			"examples/README.md",
+			"examples/book_viewer/README.md",
+			"examples/book_viewer/book_viewer_example.min.js",
+			"examples/book_viewer/codemirror-bundle.js",
+			"examples/book_viewer/index.html",
 			"examples/book_viewer.md",
+			"examples/embedded_editor/README.md",
+			"examples/embedded_editor/codemirror-bundle.js",
+			"examples/embedded_editor/embedded_editor_example.min.js",
+			"examples/embedded_editor/index.html",
 			"examples/embedded_editor.md",
+			"examples/markdown_editor/README.md",
+			"examples/markdown_editor/codemirror-bundle.js",
+			"examples/markdown_editor/index.html",
+			"examples/markdown_editor/markdown_editor_example.min.js",
 			"examples/markdown_editor.md",
+			"examples/server_upload/README.md",
+			"examples/server_upload/codemirror-bundle.js",
+			"examples/server_upload/index.html",
+			"examples/server_upload/pict-section-markdowneditor-server-upload-example.min.js",
 			"examples/server_upload.md",
 			"image_upload.md",
 			"index.html",

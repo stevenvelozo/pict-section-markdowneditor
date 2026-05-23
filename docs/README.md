@@ -188,10 +188,10 @@ When `EnableRichPreview` is `true`, each segment displays a rendered preview bel
 
 ## Example Applications
 
-- [Markdown Editor](examples/markdown_editor.md) -- Full-featured segmented editor with previews, formatting, and drag reorder
-- [Embedded Editor](examples/embedded_editor.md) -- Small bordered widget for notes, comments, or form fields
-- [Book Viewer](examples/book_viewer.md) -- Multi-chapter book with click-to-edit sections
-- [Server Upload](examples/server_upload.md) -- Orator server with image upload endpoint and the `onImageUpload` hook
+- [Markdown Editor](examples/markdown_editor/README.md) -- Full-featured segmented editor with previews, formatting, and drag reorder
+- [Embedded Editor](examples/embedded_editor/README.md) -- Small bordered widget for notes, comments, or form fields
+- [Book Viewer](examples/book_viewer/README.md) -- Multi-chapter book with click-to-edit sections
+- [Server Upload](examples/server_upload/README.md) -- Orator server with image upload endpoint and the `onImageUpload` hook
 
 ## Related Packages
 

@@ -32,5 +32,13 @@
 		"@codemirror/state": "^6.5.4",
 		"codemirror": "^6.0.2",
 		"esbuild": "^0.27.3"
+	},
+	"retold": {
+		"ExampleApplication": {
+			"Stage": true,
+			"Title": "Embedded Editor",
+			"Summary": "The smallest useful integration — pict-section-markdowneditor mounted inside a bordered card on an ordinary page, ready to drop into a notes field or comment box.",
+			"Complexity": "Basic"
+		}
 	}
 }
