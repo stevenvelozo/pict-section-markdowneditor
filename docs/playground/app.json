@@ -1,0 +1,6 @@
+{
+	"Name": "Markdown Editor Playground",
+	"Hash": "MarkdownEditorPlayground",
+	"MainViewportViewIdentifier": "MarkdownEditor",
+	"AutoRenderMainViewportViewAfterInitialize": true
+}

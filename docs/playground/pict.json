@@ -1,0 +1,10 @@
+{
+	"Product": "MarkdownEditorPlayground",
+	"MarkdownEditorViewConfig":
+	{
+		"ContentDataAddress":  "AppData.Document.Segments",
+		"ReadOnly":            false,
+		"EnableRichPreview":   true,
+		"DefaultPreviewMode":  "off"
+	}
+}

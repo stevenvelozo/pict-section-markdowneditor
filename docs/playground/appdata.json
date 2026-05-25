@@ -1,0 +1,20 @@
+{
+	"Document":
+	{
+		"Segments":
+		[
+			{
+				"Content": "# Markdown Editor Playground\n\nWelcome! Each block below is a **segment** — try dragging the handle on the left to reorder them, click the **+** button at the bottom to add new ones, or use the per-segment sidebar to format text."
+			},
+			{
+				"Content": "## Segment Two — Lists & Inline Formatting\n\n- *Italic*, **bold**, and `inline code`\n- [Links](https://retold.dev) open externally in the preview\n- Drag the handle on the left to reorder this block\n\n> Blockquotes work too, and so do tables:\n\n| Feature | Status |\n|---------|--------|\n| Markdown | yes |\n| Drag-reorder | yes |\n| Rich preview | yes |"
+			},
+			{
+				"Content": "### A Tiny Embedded Image\n\n![Pict segmented editor](data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20120%2040%22%3E%3Crect%20width%3D%22120%22%20height%3D%2240%22%20fill%3D%22%23E76F51%22%2F%3E%3Ctext%20x%3D%2260%22%20y%3D%2225%22%20text-anchor%3D%22middle%22%20fill%3D%22%23FAEDCD%22%20font-family%3D%22sans-serif%22%20font-size%3D%2214%22%3EPICT%3C%2Ftext%3E%3C%2Fsvg%3E)\n\nImage-paste collapses long data URIs into compact placeholders so the editor stays readable."
+			},
+			{
+				"Content": "## Code\n\n```javascript\nconst greet = (pName) =>\n{\n    return `Hello, ${pName}!`;\n};\n\nconsole.log(greet('Pict'));\n```\n\nToggle the per-segment **Preview** tab (in tabbed mode) to see the rendered output via `pict-section-content`."
+			}
+		]
+	}
+}
