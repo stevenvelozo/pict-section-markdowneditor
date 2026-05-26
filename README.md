@@ -1,6 +1,6 @@
 # pict-section-markdowneditor
 
-> **[&#9654; Read the Pict-Section-Markdowneditor Documentation](https://stevenvelozo.github.io/pict-section-markdowneditor/)** &mdash; interactive docs with the full API reference.
+> **[&#9654; Read the Pict-Section-Markdowneditor Documentation](https://fable-retold.github.io/pict-section-markdowneditor/)** &mdash; interactive docs with the full API reference.
 
 A segmented markdown editor for Pict applications, built on CodeMirror v6. Split your document into independently editable segments, reorder them with drag-and-drop, and get live rich previews with syntax highlighting, mermaid diagrams, and KaTeX math.
 
@@ -149,10 +149,10 @@ Four working example applications are included in the `example_applications/` fo
 
 ## Related Packages
 
-- [pict](https://github.com/stevenvelozo/pict) - MVC application framework
-- [pict-view](https://github.com/stevenvelozo/pict-view) - View base class
-- [pict-section-content](https://github.com/stevenvelozo/pict-section-content) - Markdown rendering with code highlighting, mermaid, and KaTeX
-- [pict-application](https://github.com/stevenvelozo/pict-application) - Application base class
+- [pict](https://github.com/fable-retold/pict) - MVC application framework
+- [pict-view](https://github.com/fable-retold/pict-view) - View base class
+- [pict-section-content](https://github.com/fable-retold/pict-section-content) - Markdown rendering with code highlighting, mermaid, and KaTeX
+- [pict-application](https://github.com/fable-retold/pict-application) - Application base class
 
 ## License
 

@@ -14,4 +14,4 @@ Split documents into independently editable segments with drag-and-drop reorder,
 [Configuration](configuration.md)
 [API Reference](api.md)
 [Image Upload](image_upload.md)
-[GitHub](https://github.com/stevenvelozo/pict-section-markdowneditor)
+[GitHub](https://github.com/fable-retold/pict-section-markdowneditor)

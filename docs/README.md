@@ -195,8 +195,8 @@ When `EnableRichPreview` is `true`, each segment displays a rendered preview bel
 
 ## Related Packages
 
-- [pict](https://github.com/stevenvelozo/pict) - Core MVC application framework
-- [pict-view](https://github.com/stevenvelozo/pict-view) - View base class
-- [pict-section-content](https://github.com/stevenvelozo/pict-section-content) - Markdown rendering with code highlighting, mermaid, and KaTeX
-- [pict-application](https://github.com/stevenvelozo/pict-application) - Application base class
-- [fable](https://github.com/stevenvelozo/fable) - Service provider framework
+- [pict](https://github.com/fable-retold/pict) - Core MVC application framework
+- [pict-view](https://github.com/fable-retold/pict-view) - View base class
+- [pict-section-content](https://github.com/fable-retold/pict-section-content) - Markdown rendering with code highlighting, mermaid, and KaTeX
+- [pict-application](https://github.com/fable-retold/pict-application) - Application base class
+- [fable](https://github.com/fable-retold/fable) - Service provider framework

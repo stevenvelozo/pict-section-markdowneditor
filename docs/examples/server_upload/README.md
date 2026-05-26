@@ -493,4 +493,4 @@ across restarts.
 - [Configuration](../../configuration.md) — view options, button quadrants
 - [API Reference](../../api.md) — `onImageUpload` contract, `openImagePicker`
 - [Image Upload](../../image_upload.md) — complete walkthrough of this example
-- [Orator](https://stevenvelozo.github.io/orator/) — Restify wrapper used by `server.js`
+- [Orator](https://fable-retold.github.io/orator/) — Restify wrapper used by `server.js`

@@ -4,7 +4,7 @@
 
 - Read the full documentation for usage, configuration, and reference
 
-[GitHub](https://github.com/stevenvelozo/pict-section-markdowneditor)
+[GitHub](https://github.com/fable-retold/pict-section-markdowneditor)
 [Get Started](#pict-section-markdowneditor)
 
 <!-- docuserve:examples:start -->

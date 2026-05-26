@@ -467,4 +467,4 @@ npx quack build && npx quack copy # produces dist/book_viewer_example.min.js
 - [Configuration](../../configuration.md) — view options, `ContentDataAddress`, templates
 - [API Reference](../../api.md) — `marshalFromView()`, `destroy()`, the segment lifecycle
 - [Image Upload](../../image_upload.md) — extending the editor with custom hooks
-- [pict-section-content](https://stevenvelozo.github.io/pict-section-content/) — `parseMarkdown()`, Mermaid/KaTeX placeholders, CSS classes
+- [pict-section-content](https://fable-retold.github.io/pict-section-content/) — `parseMarkdown()`, Mermaid/KaTeX placeholders, CSS classes

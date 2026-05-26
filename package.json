@@ -12,14 +12,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/stevenvelozo/pict-section-markdowneditor.git"
+		"url": "git+https://github.com/fable-retold/pict-section-markdowneditor.git"
 	},
 	"author": "steven velozo <steven@velozo.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/stevenvelozo/pict-section-markdowneditor/issues"
+		"url": "https://github.com/fable-retold/pict-section-markdowneditor/issues"
 	},
-	"homepage": "https://github.com/stevenvelozo/pict-section-markdowneditor#readme",
+	"homepage": "https://github.com/fable-retold/pict-section-markdowneditor#readme",
 	"devDependencies": {
 		"browser-env": "^3.3.0",
 		"chai": "^6.2.2",
