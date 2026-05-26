@@ -136,108 +136,45 @@ module.exports.attach = function attach(pView)
 	};
 
 	/**
-	 * Initialize Mermaid with theme variables read from the active
-	 * pict-provider-theme palette. Idempotent; safe to call on every
-	 * render. Called from _postRenderMermaid before mermaid.run().
+	 * Lazily bind the shared Theme-Diagram-Adapter for mermaid.  The
+	 * adapter handles mermaid.initialize() against the active pict
+	 * theme, subscribes to onApply, and re-renders existing diagrams
+	 * when the theme/mode changes.  Idempotent.
+	 *
+	 * Falls back to a direct-require path when no theme provider is
+	 * installed — the static base theme still picks up any CSS
+	 * variables on :root.
 	 */
-	pView._initializeMermaidTheme = function _initializeMermaidTheme()
+	pView._ensureMermaidAdapter = function _ensureMermaidAdapter()
 	{
-		if (typeof mermaid === 'undefined' || typeof window === 'undefined') { return; }
-		let tmpCs = getComputedStyle(document.documentElement);
-		let tmpVar = (pName, pFallback) =>
-		{
-			let tmpVal = (tmpCs.getPropertyValue(pName) || '').trim();
-			return tmpVal || pFallback;
-		};
-		try
-		{
-			mermaid.initialize(
-			{
-				startOnLoad: false,
-				theme: 'base',
-				securityLevel: 'loose',
-				themeVariables:
-				{
-					primaryColor:        tmpVar('--theme-color-background-panel',     '#FAF8F4'),
-					primaryTextColor:    tmpVar('--theme-color-text-primary',        '#3D3229'),
-					primaryBorderColor:  tmpVar('--theme-color-brand-primary',       '#2E7D74'),
-					secondaryColor:      tmpVar('--theme-color-background-secondary', '#F0EDE8'),
-					secondaryTextColor:  tmpVar('--theme-color-text-secondary',      '#5E5549'),
-					secondaryBorderColor:tmpVar('--theme-color-border-default',      '#DDD6CA'),
-					tertiaryColor:       tmpVar('--theme-color-background-tertiary',  '#EDE9E3'),
-					tertiaryTextColor:   tmpVar('--theme-color-text-secondary',      '#5E5549'),
-					tertiaryBorderColor: tmpVar('--theme-color-border-light',        '#E8E2D7'),
-					background:          tmpVar('--theme-color-background-panel',     '#FAF8F4'),
-					mainBkg:             tmpVar('--theme-color-background-panel',     '#FAF8F4'),
-					secondBkg:           tmpVar('--theme-color-background-secondary', '#F0EDE8'),
-					lineColor:           tmpVar('--theme-color-text-secondary',      '#5E5549'),
-					textColor:           tmpVar('--theme-color-text-primary',        '#3D3229'),
-					noteBkgColor:        tmpVar('--theme-color-background-tertiary',  '#EDE9E3'),
-					noteTextColor:       tmpVar('--theme-color-text-primary',        '#3D3229'),
-					noteBorderColor:     tmpVar('--theme-color-border-default',      '#DDD6CA'),
-					errorBkgColor:       tmpVar('--theme-color-status-error',        '#D9534F'),
-					errorTextColor:      tmpVar('--theme-color-text-on-brand',      '#FFFFFF'),
-					fontFamily:          tmpVar('--theme-typography-family-sans', 'inherit')
-				}
-			});
-		}
-		catch (pError)
-		{
-			pView.log.warn(`PICT-MarkdownEditor mermaid theme init failed: ${pError.message || pError}`);
-		}
-	};
-
-	/**
-	 * Subscribe to pict-provider-theme apply events so diagrams in the
-	 * rich preview re-render with the new palette on theme change.
-	 * Idempotent. Falls through silently when the theme provider isn't
-	 * installed (the static base theme still applies).
-	 */
-	pView._subscribeMermaidToThemeChanges = function _subscribeMermaidToThemeChanges()
-	{
-		if (pView._mermaidThemeSubscribed) { return; }
+		if (pView._mermaidAdapter) { return pView._mermaidAdapter; }
+		if (typeof mermaid === 'undefined' || typeof window === 'undefined') { return null; }
 		let tmpProvider = pView.pict && pView.pict.providers && pView.pict.providers.Theme;
-		if (!tmpProvider || typeof tmpProvider.onApply !== 'function') { return; }
-		tmpProvider.onApply(function ()
-		{
-			pView._initializeMermaidTheme();
-			pView._refreshMermaidDiagrams();
-		});
-		pView._mermaidThemeSubscribed = true;
-	};
-
-	/**
-	 * Re-render every rendered Mermaid diagram in the document using its
-	 * cached source (stashed as `data-mermaid-source` by _postRenderMermaid
-	 * before the first run). Called from the onApply handler after the
-	 * theme variables have been re-applied.
-	 */
-	pView._refreshMermaidDiagrams = function _refreshMermaidDiagrams()
-	{
-		if (typeof mermaid === 'undefined' || typeof document === 'undefined') { return; }
-		let tmpRendered = document.querySelectorAll('pre.mermaid[data-mermaid-source]');
-		if (tmpRendered.length < 1) { return; }
-		for (let i = 0; i < tmpRendered.length; i++)
-		{
-			let tmpEl = tmpRendered[i];
-			tmpEl.textContent = tmpEl.getAttribute('data-mermaid-source');
-			tmpEl.removeAttribute('data-processed');
-		}
 		try
 		{
-			let tmpResult = mermaid.run({ nodes: tmpRendered });
-			if (tmpResult && typeof tmpResult.catch === 'function')
+			if (tmpProvider && tmpProvider.diagram && typeof tmpProvider.diagram.adaptMermaid === 'function')
 			{
-				tmpResult.catch((pError) =>
+				pView._mermaidAdapter = tmpProvider.diagram.adaptMermaid(mermaid, {});
+			}
+			else
+			{
+				let libDiagramAdapter = require('pict-provider-theme/source/Theme-Diagram-Adapter.js');
+				libDiagramAdapter.initializeMermaid(mermaid);
+				pView._mermaidAdapter =
 				{
-					pView.log.warn(`PICT-MarkdownEditor mermaid re-render failed: ${pError.message || pError}`);
-				});
+					refresh: function () { return libDiagramAdapter.refreshMermaidDiagrams(); },
+					reinitialize: function () { libDiagramAdapter.initializeMermaid(mermaid); },
+					dispose: function () {},
+					subscribed: false
+				};
 			}
 		}
 		catch (pError)
 		{
-			pView.log.warn(`PICT-MarkdownEditor mermaid re-render failed: ${pError.message || pError}`);
+			pView.log.warn(`PICT-MarkdownEditor mermaid theme adapter init failed: ${pError.message || pError}`);
+			pView._mermaidAdapter = null;
 		}
+		return pView._mermaidAdapter;
 	};
 
 	/**
@@ -267,20 +204,28 @@ module.exports.attach = function attach(pView)
 			return;
 		}
 
-		// First-time setup: apply theme variables + subscribe to theme
-		// apply events so diagrams re-render on theme change.
-		pView._initializeMermaidTheme();
-		pView._subscribeMermaidToThemeChanges();
+		// First-time setup: bind the shared Theme-Diagram-Adapter so mermaid
+		// follows the active palette and re-renders when the theme/mode
+		// changes (manual toggle or OS-driven via prefers-color-scheme).
+		pView._ensureMermaidAdapter();
 
 		// Cache each diagram's source on the element. mermaid.run()
 		// replaces textContent with the rendered SVG; the cache lets
-		// us re-run on theme change without re-parsing markdown.
-		for (let i = 0; i < tmpMermaidElements.length; i++)
+		// the adapter's refresh re-run without re-parsing markdown.
+		let tmpProviderForStash = pView.pict && pView.pict.providers && pView.pict.providers.Theme;
+		if (tmpProviderForStash && tmpProviderForStash.diagram && typeof tmpProviderForStash.diagram.stashMermaidSource === 'function')
 		{
-			let tmpEl = tmpMermaidElements[i];
-			if (!tmpEl.hasAttribute('data-mermaid-source'))
+			tmpProviderForStash.diagram.stashMermaidSource(tmpMermaidElements);
+		}
+		else
+		{
+			for (let i = 0; i < tmpMermaidElements.length; i++)
 			{
-				tmpEl.setAttribute('data-mermaid-source', tmpEl.textContent);
+				let tmpEl = tmpMermaidElements[i];
+				if (!tmpEl.hasAttribute('data-mermaid-source'))
+				{
+					tmpEl.setAttribute('data-mermaid-source', tmpEl.textContent);
+				}
 			}
 		}
 
