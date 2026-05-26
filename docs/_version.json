@@ -1,7 +1,7 @@
 {
 	"Name": "pict-section-markdowneditor",
-	"Version": "1.0.15",
+	"Version": "1.0.17",
 	"Description": "Pict segmented markdown editor section built on CodeMirror",
-	"GeneratedAt": "2026-05-26T18:24:11.936Z",
-	"GitCommit": "8beaaab"
+	"GeneratedAt": "2026-05-26T21:14:27.115Z",
+	"GitCommit": "8d3e6c1"
 }
