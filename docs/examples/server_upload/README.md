@@ -1,13 +1,13 @@
-# Server Upload — `onImageUpload` Hook + Orator Backend
+# Server Upload - `onImageUpload` Hook + Orator Backend
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/server%5Fupload/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/server%5Fupload/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 The reference integration of `pict-section-markdowneditor` with a live
 server-side image upload pipeline. By default, images pasted or dropped
 into the editor become base64 data URIs embedded directly in the
-markdown — fine for sketches and quick screenshots, terrible for
+markdown - fine for sketches and quick screenshots, terrible for
 documents with more than a handful of large images. This example
 overrides the `onImageUpload(file, segmentIndex, callback)` hook to
 POST the raw image bytes to a local Orator server, save them to a
@@ -20,7 +20,7 @@ hook. A status pill in the right sidebar shows pending / success /
 error state per upload. A live "Uploaded Files" panel below it refreshes
 from `GET /api/uploads` every time a new file lands.
 
-Use this as the recipe for every server-backed editor integration —
+Use this as the recipe for every server-backed editor integration -
 the client-side hook and the server-side endpoint are independently
 swappable. The same client code works against a multipart endpoint,
 a presigned S3 URL, or any other URL-returning upload service with no
@@ -32,32 +32,32 @@ changes to the editor itself.
 |------------|------------------|
 | `onImageUpload(pFile, pSegmentIndex, fCallback)` override | `ServerUploadMarkdownEditorView.onImageUpload()` in `ServerUpload-Example-Application.js` |
 | Raw binary `fetch` upload with custom headers | `Content-Type: <image-mime>` + `x-filename: <original-name>` |
-| Asynchronous callback contract — `fCallback(null, pURL)` | The editor inserts `![alt](pURL)` only after the callback fires |
+| Asynchronous callback contract - `fCallback(null, pURL)` | The editor inserts `![alt](pURL)` only after the callback fires |
 | Per-upload status feedback in the host UI | `_showUploadStatus(message, type)` with success / error / pending styles |
 | Live upload-list refresh via `GET /api/uploads` | `_refreshUploadList()` rebuilds the right-rail panel after each success |
 | Orator service-server setup with body parsing | `tmpServiceServer.server.use(tmpServiceServer.bodyParser())` |
 | Filename sanitisation against path traversal | `sanitizeFilename(pName)` strips dir separators + unsafe characters |
-| Content-type-aware extension fallback | If the filename has no extension, derive one from MIME (`image/png → .png`) |
+| Content-type-aware extension fallback | If the filename has no extension, derive one from MIME (`image/png -> .png`) |
 | Static file serving of uploaded images | `_Orator.addStaticRoute(__dirname + '/dist/', 'index.html')` makes `/uploads/*` reachable |
 
 ## Key files
 
-- `ServerUpload-Example-Application.js` — client-side application. Subclasses
+- `ServerUpload-Example-Application.js` - client-side application. Subclasses
   `PictSectionMarkdownEditor` to override `onImageUpload`, adds host
   helpers `_showUploadStatus()`, `_refreshUploadList()`, and `_formatBytes()`.
-- `server.js` — Orator backend. Stands up a Fable instance, instantiates
+- `server.js` - Orator backend. Stands up a Fable instance, instantiates
   the Restify service server, registers `POST /api/upload-image` and
   `GET /api/uploads`, serves `dist/` as static files.
-- `html/index.html` — page shell with two columns: the editor on the
+- `html/index.html` - page shell with two columns: the editor on the
   left and a sidebar with the "How It Works" info panel + the "Uploaded
   Files" list on the right.
 
-## Two state owners — the editor and the upload list
+## Two state owners - the editor and the upload list
 
 The client tracks two pieces of state. The editor's content lives in
 `AppData.Document.Segments` like every other example. The host helpers
 do *not* mirror the upload list into `AppData`; they fetch it on demand
-from `GET /api/uploads`. This is deliberate — the server is the source
+from `GET /api/uploads`. This is deliberate - the server is the source
 of truth for uploaded files, and the host should not be tempted to
 cache that list (or it has to invalidate it).
 
@@ -76,7 +76,7 @@ The two seed segments tee up the demo:
 
 ---
 
-## Feature 1 — Overriding the `onImageUpload` hook
+## Feature 1 - Overriding the `onImageUpload` hook
 
 The default implementation in the base class returns `false`, causing
 the editor to fall back to `FileReader.readAsDataURL` for base64
@@ -141,17 +141,17 @@ class ServerUploadMarkdownEditorView extends libPictSectionMarkdownEditor
 Three contract obligations:
 - Return `true` synchronously so the editor *does not* trigger the
   base64 fallback.
-- Call `fCallback(null, pURL)` exactly once on success — the editor
+- Call `fCallback(null, pURL)` exactly once on success - the editor
   uses `pURL` to build `![alt](pURL)` and inserts it at the cursor.
-- Call `fCallback(pErrorMessage)` exactly once on failure — the
+- Call `fCallback(pErrorMessage)` exactly once on failure - the
   editor logs the error and inserts nothing.
 
-The raw `File` object is sent as the request body with two headers —
+The raw `File` object is sent as the request body with two headers -
 `Content-Type` carries the image MIME, `x-filename` carries the
 original filename. No multipart wrapper; the server reads the body
 directly.
 
-## Feature 2 — All three image ingestion paths funnel through the hook
+## Feature 2 - All three image ingestion paths funnel through the hook
 
 Clipboard paste, drag-and-drop onto the segment, and the file-picker
 button each end up calling the same internal method,
@@ -193,7 +193,7 @@ Overriding `onImageUpload` in one place catches all three paths. The
 alt text is derived from the filename (with the extension stripped) and
 becomes the `![alt]` portion of the inserted markdown.
 
-## Feature 3 — Host-side status feedback
+## Feature 3 - Host-side status feedback
 
 Because the upload is asynchronous, the user benefits from immediate
 "started" / "finished" feedback. The view exposes a small helper that
@@ -229,11 +229,11 @@ _showUploadStatus(pMessage, pType)
 
 The element is owned by the host page (it lives in the right sidebar's
 `.info-panel`), so the editor stays decoupled from the surrounding
-layout. The auto-clear is keyed by message equality — if a new upload
+layout. The auto-clear is keyed by message equality - if a new upload
 fires before the previous message would clear, the new message stays
 until *its* clear timer fires.
 
-## Feature 4 — Live upload list refresh
+## Feature 4 - Live upload list refresh
 
 After every successful upload, the view re-fetches the file list and
 rebuilds the sidebar panel:
@@ -282,7 +282,7 @@ The application also calls `_refreshUploadList()` on a 500ms delay
 after initial render, so the panel is populated on first load even if
 the user has previously uploaded files.
 
-## Feature 5 — The Orator endpoint
+## Feature 5 - The Orator endpoint
 
 The server side is an Orator service server with two routes.
 `POST /api/upload-image` consumes the raw body, sanitises the filename,
@@ -351,10 +351,10 @@ tmpServiceServer.post('/api/upload-image',
 The route prepends `Date.now()` to the sanitised filename to guarantee
 uniqueness, then returns `Success`, `URL`, `Filename`, and `Size`. The
 client reads `pData.URL` and passes it back through `fCallback(null,
-pData.URL)` — that single field is what gets inserted into the
+pData.URL)` - that single field is what gets inserted into the
 markdown.
 
-## Feature 6 — Filename sanitisation
+## Feature 6 - Filename sanitisation
 
 Three steps, each defending against a different class of attack:
 
@@ -378,7 +378,7 @@ function sanitizeFilename(pName)
 }
 ```
 
-- `libPath.basename` defeats path traversal — `../../../etc/passwd`
+- `libPath.basename` defeats path traversal - `../../../etc/passwd`
   becomes `passwd` before any further processing.
 - The regex strips characters that some filesystems reject and that
   shell-quoting bugs can mishandle.
@@ -387,7 +387,7 @@ function sanitizeFilename(pName)
 The fallback `'upload'` ensures every upload has a stable name even
 when the client sends nothing or sends an empty string.
 
-## Feature 7 — Body parsing for raw binary
+## Feature 7 - Body parsing for raw binary
 
 Restify's default body parser handles JSON, URL-encoded forms, and
 multipart. Raw binary requires an explicit middleware registration:
@@ -409,7 +409,7 @@ puts the binary buffer on `pRequest.body`. The client is responsible
 for setting the `Content-Type` header to the image's actual MIME so
 the parser knows to treat the body as binary, not as form data.
 
-## Feature 8 — Static file serving of uploaded images
+## Feature 8 - Static file serving of uploaded images
 
 A single Orator call serves the entire `dist/` folder as static files,
 which includes the application bundle, the CodeMirror bundle, and the
@@ -442,26 +442,26 @@ across restarts.
 
 ## Things to try in the running app
 
-- **Paste a screenshot** — `Cmd-Shift-4 → Cmd-V` (macOS) or
-  `Win-Shift-S → Ctrl-V` (Windows) into any segment. Watch the
+- **Paste a screenshot** - `Cmd-Shift-4 -> Cmd-V` (macOS) or
+  `Win-Shift-S -> Ctrl-V` (Windows) into any segment. Watch the
   "Uploading..." status pill in the right sidebar transition to
   "Uploaded: 1708... (12.4 KB)" once the server responds.
-- **Drag an image file** — drag a `.png` from Finder/Explorer onto
+- **Drag an image file** - drag a `.png` from Finder/Explorer onto
   any segment. Editor outlines the drop target with a dashed border.
   The dropped image uploads through the same hook.
-- **Click the image button** — the right-sidebar image button opens
+- **Click the image button** - the right-sidebar image button opens
   the native file picker. Same upload path.
-- **Edit the inserted URL** — after upload, the editor's cursor sits
+- **Edit the inserted URL** - after upload, the editor's cursor sits
   at the end of `![photo](/uploads/...)`. Edit the alt text manually;
   rich-preview re-renders with the new alt.
-- **Inspect the markdown** — call
+- **Inspect the markdown** - call
   `_Pict.views.ServerUploadEditorView.getAllContent()` in the console.
-  The inserted URLs are server paths, not data URIs — the document
+  The inserted URLs are server paths, not data URIs - the document
   stays lightweight.
-- **Watch `dist/uploads/`** — open the folder in a file manager and
+- **Watch `dist/uploads/`** - open the folder in a file manager and
   paste a few images. Each upload produces a `<timestamp>-<filename>`
   file.
-- **Trigger an error** — kill the server (`Ctrl-C`) and try to paste
+- **Trigger an error** - kill the server (`Ctrl-C`) and try to paste
   an image. The "Upload error: ..." pill appears in red; no image is
   inserted into the segment.
 
@@ -484,13 +484,13 @@ across restarts.
    denial-of-service. Never trust client-supplied filenames.
 5. **The same client code works against any URL-returning service.**
    Swap the `fetch` URL and request shape (multipart, presigned
-   S3 PUT, etc.) without changing the editor or the contract — as
+   S3 PUT, etc.) without changing the editor or the contract - as
    long as the final step is `fCallback(null, publicURL)`.
 
 ## Related documentation
 
-- [Overview](../../README.md) — module README + Quick Start
-- [Configuration](../../configuration.md) — view options, button quadrants
-- [API Reference](../../api.md) — `onImageUpload` contract, `openImagePicker`
-- [Image Upload](../../image_upload.md) — complete walkthrough of this example
-- [Orator](https://fable-retold.github.io/orator/) — Restify wrapper used by `server.js`
+- [Overview](../../README.md) - module README + Quick Start
+- [Configuration](../../configuration.md) - view options, button quadrants
+- [API Reference](../../api.md) - `onImageUpload` contract, `openImagePicker`
+- [Image Upload](../../image_upload.md) - complete walkthrough of this example
+- [Orator](https://fable-retold.github.io/orator/) - Restify wrapper used by `server.js`
