@@ -293,11 +293,8 @@ The third seed segment exercises the full pipeline in one block:
 ```markdown
 ## Diagrams & Math
 
-```mermaid
-graph LR;
-    A[Editor] --> B[Preview];
-    B --> C[Rendered];
-```
+<!-- bespoke diagram: edit diagrams/diagrams-math.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-markdowneditor/docs/examples/markdown_editor -->
+![Diagrams & Math](diagrams/diagrams-math.svg)
 
 Einstein's equation: $E=mc^2$
 
