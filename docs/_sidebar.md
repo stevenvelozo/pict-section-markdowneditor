@@ -14,7 +14,7 @@
   - [Embedded Editor](examples/embedded_editor/README.md)
   - [Book Viewer](examples/book_viewer/README.md)
   - [Server Upload](examples/server_upload/README.md)
-  - [RichText Form Input](examples/richtext_form/README.md)
+  - [RichText Form Input ↗](https://fable-retold.github.io/pict-section-form/#/page/examples/richtext_form/README)
 
 - Retold Ecosystem
 

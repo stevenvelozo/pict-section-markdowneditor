@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-06-04T23:20:10.848Z",
+	"Generated": "2026-06-04T23:33:43.668Z",
 	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
@@ -57,8 +57,8 @@
 						"Path": "examples/server_upload/README.md"
 					},
 					{
-						"Title": "RichText Form Input",
-						"Path": "examples/richtext_form/README.md"
+						"Title": "RichText Form Input ↗",
+						"Path": "https://fable-retold.github.io/pict-section-form/#/page/examples/richtext_form/README"
 					}
 				]
 			},
@@ -124,9 +124,6 @@
 			"examples/markdown_editor/diagrams/diagrams-math.svg",
 			"examples/markdown_editor/index.html",
 			"examples/markdown_editor/markdown_editor_example.min.js",
-			"examples/richtext_form/README.md",
-			"examples/richtext_form/index.html",
-			"examples/richtext_form/richtext_form_example.min.js",
 			"examples/server_upload/README.md",
 			"examples/server_upload/codemirror-bundle.js",
 			"examples/server_upload/index.html",
