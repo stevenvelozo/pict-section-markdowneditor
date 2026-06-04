@@ -14,6 +14,7 @@
   - [Embedded Editor](examples/embedded_editor/README.md)
   - [Book Viewer](examples/book_viewer/README.md)
   - [Server Upload](examples/server_upload/README.md)
+  - [RichText Form Input](examples/richtext_form/README.md)
 
 - Retold Ecosystem
 

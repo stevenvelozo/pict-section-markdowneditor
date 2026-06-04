@@ -1,7 +1,7 @@
 # Markdown Editor - The Full-Featured Segmented Editor
 
 <!-- docuserve:example-launch:start -->
-> **[Launch the live app](examples/markdown%5Feditor/index.html)** - runs in your browser, opens in a new tab.
+> **[&#9654; Launch the live app](examples/markdown%5Feditor/index.html)** — runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 The reference deployment of `pict-section-markdowneditor` - a four-segment

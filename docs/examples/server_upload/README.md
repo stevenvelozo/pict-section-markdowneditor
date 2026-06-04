@@ -1,7 +1,7 @@
 # Server Upload - `onImageUpload` Hook + Orator Backend
 
 <!-- docuserve:example-launch:start -->
-> **[Launch the live app](examples/server%5Fupload/index.html)** - runs in your browser, opens in a new tab.
+> **[&#9654; Launch the live app](examples/server%5Fupload/index.html)** — runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 The reference integration of `pict-section-markdowneditor` with a live

@@ -1296,3 +1296,12 @@ class PictSectionMarkdownEditor extends libPictViewClass
 module.exports = PictSectionMarkdownEditor;
 
 module.exports.default_configuration = _DefaultConfiguration;
+
+// Form-side integration: the `RichText` InputType (and its provider class) lives
+// in pict-section-form under `providers/inputs/Pict-Provider-Input-RichText.js`,
+// not here. The provider lazy-requires this module on the first setMode('edit')
+// so consumers that never edit don't pull CodeMirror.
+//
+//   const libRichTextInput = require('pict-section-form').RichTextInput;
+//   pict.addProvider('Pict-Input-RichText',
+//       libRichTextInput.default_configuration, libRichTextInput);

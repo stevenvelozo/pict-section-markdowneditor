@@ -1,7 +1,7 @@
 # Embedded Editor - Markdown Editing as a Page Widget
 
 <!-- docuserve:example-launch:start -->
-> **[Launch the live app](examples/embedded%5Feditor/index.html)** - runs in your browser, opens in a new tab.
+> **[&#9654; Launch the live app](examples/embedded%5Feditor/index.html)** — runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 The minimal-viable embedded use of `pict-section-markdowneditor` - the

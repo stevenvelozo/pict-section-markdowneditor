@@ -1,7 +1,7 @@
 # Book Viewer - Click-to-Edit Long-Form Content
 
 <!-- docuserve:example-launch:start -->
-> **[Launch the live app](examples/book%5Fviewer/index.html)** - runs in your browser, opens in a new tab.
+> **[&#9654; Launch the live app](examples/book%5Fviewer/index.html)** — runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 A long-form reading experience - *"De Architectura Digitalis"*, an

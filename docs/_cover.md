@@ -10,8 +10,9 @@
 <!-- docuserve:examples:start -->
 | Example | Complexity | Launch |
 |---------|------------|--------|
-| [Book Viewer](examples/book%5Fviewer/README.md) | Intermediate | [Launch](examples/book%5Fviewer/index.html) |
-| [Embedded Editor](examples/embedded%5Feditor/README.md) | Basic | [Launch](examples/embedded%5Feditor/index.html) |
-| [Markdown Editor](examples/markdown%5Feditor/README.md) | Basic | [Launch](examples/markdown%5Feditor/index.html) |
-| [Server Upload](examples/server%5Fupload/README.md) | Intermediate | [Launch](examples/server%5Fupload/index.html) |
+| [Book Viewer](examples/book%5Fviewer/README.md) | Intermediate | [&#9654; Launch](examples/book%5Fviewer/index.html) |
+| [Embedded Editor](examples/embedded%5Feditor/README.md) | Basic | [&#9654; Launch](examples/embedded%5Feditor/index.html) |
+| [Markdown Editor](examples/markdown%5Feditor/README.md) | Basic | [&#9654; Launch](examples/markdown%5Feditor/index.html) |
+| [RichText Form Input](examples/richtext%5Fform/README.md) | Intermediate | [&#9654; Launch](examples/richtext%5Fform/index.html) |
+| [Server Upload](examples/server%5Fupload/README.md) | Intermediate | [&#9654; Launch](examples/server%5Fupload/index.html) |
 <!-- docuserve:examples:end -->
