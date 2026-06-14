@@ -119,6 +119,14 @@ module.exports.attach = function attach(pView)
 			tmpExtensions = tmpExtensions.concat(tmpCM.extensions);
 		}
 
+		// Wrap long lines instead of scrolling horizontally. Markdown is prose, and
+		// a horizontally-scrolling editor in a narrow pane is unusable. On by
+		// default; a consumer can disable it with LineWrapping: false.
+		if (pView.options.LineWrapping !== false)
+		{
+			tmpExtensions.push(tmpCM.EditorView.lineWrapping);
+		}
+
 		// Update listener for content changes, focus, and cursor tracking
 		tmpExtensions.push(
 			tmpCM.EditorView.updateListener.of((pUpdate) =>
