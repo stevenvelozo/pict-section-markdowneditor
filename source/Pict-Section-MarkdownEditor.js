@@ -131,12 +131,44 @@ class PictSectionMarkdownEditor extends libPictViewClass
 			this.onAfterInitialRender();
 			this.initialRenderComplete = true;
 		}
+		else
+		{
+			// A re-render means the host re-created our destination element (an
+			// editor shown/hidden, or remounted into a fresh container). The
+			// targetElement cached on the first render is now detached, so a
+			// rebuild would write segments into an orphaned node. Re-resolve the
+			// live target and rebuild into it from the current segment data.
+			this._remountEditorUI();
+		}
 
 		// Inject CSS from all registered views (after onAfterInitialRender so
 		// that pict-section-content's CSS is registered before injection)
 		this.pict.CSSMap.injectCSS();
 
 		return super.onAfterRender(pRenderable);
+	}
+
+	/**
+	 * Re-resolve the target element from TargetElementAddress and rebuild the
+	 * editor UI into it. Called on re-render so the editor survives the host
+	 * replacing its destination element (which would otherwise leave
+	 * this.targetElement pointing at a detached node and the live container empty).
+	 */
+	_remountEditorUI()
+	{
+		if (!this._codeMirrorModules)
+		{
+			return;
+		}
+
+		let tmpTargetElementSet = this.services.ContentAssignment.getElement(this.options.TargetElementAddress);
+		if (!tmpTargetElementSet || tmpTargetElementSet.length < 1)
+		{
+			return;
+		}
+
+		this.targetElement = tmpTargetElementSet[0];
+		this._buildEditorUI();
 	}
 
 	onAfterInitialRender()
