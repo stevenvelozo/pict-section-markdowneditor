@@ -322,7 +322,7 @@ module.exports.attach = function attach(pView)
 		// Clear previous active
 		if (pView._activeSegmentIndex >= 0 && pView._activeSegmentIndex !== pSegmentIndex)
 		{
-			let tmpPrevEl = document.getElementById(`PictMDE-Segment-${pView._activeSegmentIndex}`);
+			let tmpPrevEl = pView._resolveInstanceElement(`PictMDE-Segment-${pView._activeSegmentIndex}`);
 			if (tmpPrevEl)
 			{
 				tmpPrevEl.classList.remove('pict-mde-active');
@@ -331,7 +331,7 @@ module.exports.attach = function attach(pView)
 
 		pView._activeSegmentIndex = pSegmentIndex;
 
-		let tmpSegEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		let tmpSegEl = pView._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 		if (tmpSegEl)
 		{
 			tmpSegEl.classList.add('pict-mde-active');
@@ -350,7 +350,7 @@ module.exports.attach = function attach(pView)
 			pView._activeSegmentIndex = -1;
 		}
 
-		let tmpSegEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		let tmpSegEl = pView._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 		if (tmpSegEl)
 		{
 			tmpSegEl.classList.remove('pict-mde-active');
@@ -373,7 +373,7 @@ module.exports.attach = function attach(pView)
 	 */
 	pView._updateSidebarPosition = function _updateSidebarPosition(pSegmentIndex)
 	{
-		let tmpSegmentEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		let tmpSegmentEl = pView._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 		if (!tmpSegmentEl)
 		{
 			return;
@@ -423,7 +423,7 @@ module.exports.attach = function attach(pView)
 	 */
 	pView._resetSidebarPosition = function _resetSidebarPosition(pSegmentIndex)
 	{
-		let tmpSegmentEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		let tmpSegmentEl = pView._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 		if (!tmpSegmentEl)
 		{
 			return;

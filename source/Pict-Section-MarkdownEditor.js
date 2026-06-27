@@ -257,6 +257,33 @@ class PictSectionMarkdownEditor extends libPictViewClass
 	}
 
 	/**
+	 * Resolve one of THIS editor instance's elements by its raw PictMDE id, scoped to this
+	 * instance's container.
+	 *
+	 * The segment/preview/editor elements all carry fixed ids (PictMDE-Segment-0, ...). Several
+	 * markdown editors can share one page -- the Drafting Kit loops editor mounts three at once, one
+	 * per loop -- and they all emit that same id space, so a document-wide getElementById would
+	 * resolve the FIRST instance's element and the editors would bleed into each other. Scoping every
+	 * lookup to the instance's own .pict-mde container keeps the instances independent without
+	 * needing to make the ids globally unique.
+	 *
+	 * Falls back to a document-wide lookup only when no container is resolved yet (e.g. pre-mount),
+	 * which preserves the original single-instance behavior for the entity-form and Docs Lake editors.
+	 *
+	 * @param {string} pElementID - the element id, e.g. `PictMDE-Segment-3`
+	 * @returns {HTMLElement|null}
+	 */
+	_resolveInstanceElement(pElementID)
+	{
+		let tmpContainer = this._getContainerElement();
+		if (tmpContainer && typeof tmpContainer.querySelector === 'function')
+		{
+			return tmpContainer.querySelector('#' + pElementID);
+		}
+		return document.getElementById(pElementID);
+	}
+
+	/**
 	 * Resolve a URL relative to the configured ImageBaseURL.
 	 *
 	 * Absolute URLs (starting with /, http://, https://, data:) are returned
@@ -396,7 +423,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		this._wireSegmentDragEvents(tmpSegmentElement, tmpSegmentIndex);
 
 		// Create the CodeMirror editor in the segment editor container
-		let tmpEditorContainer = document.getElementById(`PictMDE-SegmentEditor-${tmpSegmentIndex}`);
+		let tmpEditorContainer = this._resolveInstanceElement(`PictMDE-SegmentEditor-${tmpSegmentIndex}`);
 		if (tmpEditorContainer)
 		{
 			this._createEditorInContainer(tmpEditorContainer, tmpSegmentIndex, pContent);
@@ -745,7 +772,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 
 		this._segmentTabStates[tmpLogicalIndex] = pTab;
 
-		let tmpSegmentEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		let tmpSegmentEl = this._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 		if (!tmpSegmentEl)
 		{
 			return;
@@ -765,7 +792,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 		}
 
 		// Update tab bar active state
-		let tmpTabBar = document.getElementById(`PictMDE-TabBar-${pSegmentIndex}`);
+		let tmpTabBar = this._resolveInstanceElement(`PictMDE-TabBar-${pSegmentIndex}`);
 		if (tmpTabBar)
 		{
 			let tmpTabs = tmpTabBar.querySelectorAll('.pict-mde-tab');
@@ -821,7 +848,7 @@ class PictSectionMarkdownEditor extends libPictViewClass
 			delete this._hiddenPreviewSegments[tmpLogicalIndex];
 		}
 
-		let tmpSegmentEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+		let tmpSegmentEl = this._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 		if (tmpSegmentEl)
 		{
 			if (tmpCurrentlyHidden)

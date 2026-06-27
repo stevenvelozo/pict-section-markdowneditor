@@ -21,7 +21,7 @@ module.exports.attach = function attach(pView)
 	 */
 	pView.openImagePicker = function openImagePicker(pSegmentIndex)
 	{
-		let tmpFileInput = document.getElementById(`PictMDE-ImageInput-${pSegmentIndex}`);
+		let tmpFileInput = pView._resolveInstanceElement(`PictMDE-ImageInput-${pSegmentIndex}`);
 		if (!tmpFileInput)
 		{
 			pView.log.warn(`PICT-MarkdownEditor openImagePicker: file input not found for segment ${pSegmentIndex}.`);
@@ -148,7 +148,7 @@ module.exports.attach = function attach(pView)
 	 */
 	pView._updateImagePreviews = function _updateImagePreviews(pSegmentIndex)
 	{
-		let tmpPreviewEl = document.getElementById(`PictMDE-ImagePreview-${pSegmentIndex}`);
+		let tmpPreviewEl = pView._resolveInstanceElement(`PictMDE-ImagePreview-${pSegmentIndex}`);
 		if (!tmpPreviewEl)
 		{
 			return;

@@ -153,7 +153,7 @@ module.exports.attach = function attach(pView)
 							if (pView._activeSegmentIndex === pSegmentIndex)
 							{
 								// Check if focus moved to another segment or truly left
-								let tmpSegEl = document.getElementById(`PictMDE-Segment-${pSegmentIndex}`);
+								let tmpSegEl = pView._resolveInstanceElement(`PictMDE-Segment-${pSegmentIndex}`);
 								if (tmpSegEl && !tmpSegEl.contains(document.activeElement))
 								{
 									pView._clearActiveSegment(pSegmentIndex);
@@ -313,7 +313,7 @@ module.exports.attach = function attach(pView)
 				pEvent.stopPropagation();
 				pView._processImageFile(tmpFile, pSegmentIndex);
 				// Clean up the dragover visual indicator
-				let tmpEditorEl = document.getElementById(`PictMDE-SegmentEditor-${pSegmentIndex}`);
+				let tmpEditorEl = pView._resolveInstanceElement(`PictMDE-SegmentEditor-${pSegmentIndex}`);
 				if (tmpEditorEl)
 				{
 					tmpEditorEl.classList.remove('pict-mde-image-dragover');

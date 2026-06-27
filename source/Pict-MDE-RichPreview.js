@@ -51,7 +51,7 @@ module.exports.attach = function attach(pView)
 			return;
 		}
 
-		let tmpPreviewEl = document.getElementById(`PictMDE-RichPreview-${pSegmentIndex}`);
+		let tmpPreviewEl = pView._resolveInstanceElement(`PictMDE-RichPreview-${pSegmentIndex}`);
 		if (!tmpPreviewEl)
 		{
 			return;
@@ -192,7 +192,7 @@ module.exports.attach = function attach(pView)
 			return;
 		}
 
-		let tmpContainer = document.getElementById(pContainerID);
+		let tmpContainer = pView._resolveInstanceElement(pContainerID);
 		if (!tmpContainer)
 		{
 			return;
@@ -268,7 +268,7 @@ module.exports.attach = function attach(pView)
 			return;
 		}
 
-		let tmpContainer = document.getElementById(pContainerID);
+		let tmpContainer = pView._resolveInstanceElement(pContainerID);
 		if (!tmpContainer)
 		{
 			return;
